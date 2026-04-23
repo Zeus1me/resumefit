@@ -9,10 +9,13 @@ export default async (req) => {
     });
   }
 
-  const ANTHROPIC_API_KEY = Netlify.env.get("ANTHROPIC_API_KEY");
+  // Try both methods for compatibility
+  let ANTHROPIC_API_KEY;
+  try { ANTHROPIC_API_KEY = Netlify.env.get("ANTHROPIC_API_KEY"); } catch { /* fallback below */ }
+  if (!ANTHROPIC_API_KEY) ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 
   if (!ANTHROPIC_API_KEY) {
-    return new Response(JSON.stringify({ error: "API key not configured" }), {
+    return new Response(JSON.stringify({ error: "API key not configured. Add ANTHROPIC_API_KEY in Netlify env vars and redeploy." }), {
       status: 500,
       headers: { "Content-Type": "application/json" }
     });
