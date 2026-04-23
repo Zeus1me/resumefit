@@ -58,55 +58,73 @@ const MD = {
 };
 
 const TIPS = [
-  { cat: "ATS", icon: "\uD83E\uDD16", tip: "Most Canadian employers use ATS. Keep formatting simple \u2014 no tables, columns, or graphics in your resume file." },
-  { cat: "Keywords", icon: "\uD83D\uDD11", tip: "Mirror exact phrases from the job posting. If they say 'data visualization,' don't write 'data viz' \u2014 ATS matches literal strings." },
-  { cat: "Numbers", icon: "\uD83D\uDCCA", tip: "Quantify everything. '12% churn reduction' beats 'reduced churn significantly' every time." },
-  { cat: "Length", icon: "\uD83D\uDCCF", tip: "1 page is standard for <10 years experience in Canada. Recruiters spend 6\u20137 seconds on first scan." },
-  { cat: "Summary", icon: "\uD83C\uDFAF", tip: "Your professional summary should mirror the job title. If they want a 'Data Scientist,' lead with 'Data Scientist with...'" },
-  { cat: "Skills", icon: "\u2699\uFE0F", tip: "Group skills by category and lead with the ones mentioned in the posting. Order matters \u2014 recruiters scan left to right." },
-  { cat: "Projects", icon: "\uD83D\uDE80", tip: "Academic projects count. Frame them with impact: what you built, what tools you used, and what the result was." },
-  { cat: "Cover Letter", icon: "\u2709\uFE0F", tip: "Never start with 'I am writing to express my interest.' Open with a specific hook about the company or role." },
-  { cat: "Tailoring", icon: "\u2702\uFE0F", tip: "A generic resume gets generic results. Every application should feel like it was written specifically for that role." },
-  { cat: "Action Verbs", icon: "\uD83D\uDCAA", tip: "Start bullets with strong verbs: Built, Designed, Optimized, Deployed, Reduced, Automated, Led, Delivered." },
-  { cat: "Gaps", icon: "\uD83D\uDD52", tip: "Freelance work fills gaps perfectly. Frame it with client impact and deliverables, not just 'freelanced.'" },
-  { cat: "LinkedIn", icon: "\uD83D\uDD17", tip: "Your LinkedIn should match your resume. Canadian recruiters will check \u2014 inconsistencies raise red flags." },
-  { cat: "File Name", icon: "\uD83D\uDCC1", tip: "Name your file 'FirstName_LastName_Role_Company.pdf' \u2014 not 'resume_final_v3(2).docx'." },
-  { cat: "PGWP", icon: "\uD83C\uDDE8\uD83C\uDDE6", tip: "For Canadian roles, mentioning work authorization (PGWP eligible) can remove a major screening concern upfront." },
-  { cat: "GPA", icon: "\uD83C\uDF93", tip: "Include your GPA if it's 3.5+ (yours is 3.8). Drop it once you have 3+ years of full-time experience." },
-  { cat: "Fonts", icon: "\uD83D\uDDA5\uFE0F", tip: "Stick to Calibri, Arial, or Garamond at 10\u201312pt. Creative fonts get mangled by ATS parsers." }
+  { cat: "ATS", tip: "Most Canadian employers use ATS. Keep formatting simple \u2014 no tables, columns, or graphics in your resume file." },
+  { cat: "Keywords", tip: "Mirror exact phrases from the job posting. If they say 'data visualization,' don't write 'data viz' \u2014 ATS matches literal strings." },
+  { cat: "Numbers", tip: "Quantify everything. '12% churn reduction' beats 'reduced churn significantly' every time." },
+  { cat: "Length", tip: "1 page is standard for <10 years experience in Canada. Recruiters spend 6-7 seconds on first scan." },
+  { cat: "Summary", tip: "Your professional summary should mirror the job title. If they want a 'Data Scientist,' lead with 'Data Scientist with...'" },
+  { cat: "Skills", tip: "Group skills by category and lead with the ones mentioned in the posting. Order matters \u2014 recruiters scan left to right." },
+  { cat: "Projects", tip: "Academic projects count. Frame them with impact: what you built, what tools you used, and what the result was." },
+  { cat: "Cover Letter", tip: "94% of hiring managers say cover letters influence interview decisions. The Problem-Solution format is the gold standard for 2026." },
+  { cat: "Tailoring", tip: "80% of hiring managers view generic AI content negatively. Always personalize \u2014 swap at least 30% of the content per application." },
+  { cat: "Action Verbs", tip: "Start bullets with strong verbs: Built, Designed, Optimized, Deployed, Reduced, Automated, Led, Delivered." },
+  { cat: "Cover Letter Hook", tip: "Never start with 'I am writing to express my interest.' Open with a quantified achievement or company-specific insight." },
+  { cat: "LinkedIn", tip: "Your LinkedIn should match your resume. Canadian recruiters will check \u2014 inconsistencies raise red flags." },
+  { cat: "File Name", tip: "Name your file 'FirstName_LastName_Role_Company.pdf' \u2014 not 'resume_final_v3(2).docx'." },
+  { cat: "PGWP", tip: "For Canadian roles, mentioning work authorization (PGWP eligible) can remove a major screening concern upfront." },
+  { cat: "Cover Letter Length", tip: "70% of hiring managers prefer 250-400 words. 49% prefer half-page. Every sentence must answer 'Why hire me?'" },
+  { cat: "Fonts", tip: "Stick to Calibri, Arial, or Garamond at 10-12pt. Creative fonts get mangled by ATS parsers." }
 ];
 
 function makeResumeSys(pages) {
-  const pageRule = pages === 1
-    ? "CRITICAL: Select ONLY the most relevant content to fit on ONE page. Pick 3-4 bullets max per role, 3-4 projects max."
-    : "This is a 2-page resume. Include more detail: 4-5 bullets per role, 5-6 projects, and expand the overview to 3-4 sentences.";
-  return `You are a resume tailoring engine. Given a job posting and candidate data, produce JSON.\nCANDIDATE: ${JSON.stringify(MD)}\n\nRULES:\n1. 2-3 sentence overview matching job title and posting language.\n2. Top skills in 4 grouped lines, renamed to match posting.\n3. ${pageRule}\n4. include_scaleai only if NLP/LLM/AI. include_airtel only if telecom/KPI/engineering.\n5. Order projects by relevance.\n\nONLY valid JSON:\n{"overview":"str","target_title":"str","skills":[{"label":"str","items":"str"}],"include_scaleai":bool,"include_airtel":bool,"freelance_bullets":["id"],"huawei_bullets":["id"],"airtel_bullets":["id"],"projects":["id"],"filename_suffix":"str"}`;
+  const pr = pages === 1
+    ? "CRITICAL: Select ONLY the most relevant content for ONE page. 3-4 bullets max per role, 3-4 projects max."
+    : "2-page resume: include more detail. 4-5 bullets per role, 5-6 projects, 3-4 sentence overview.";
+  return `You are a resume tailoring engine. Candidate data: ${JSON.stringify(MD)}\n\nRULES:\n1. 2-3 sentence overview matching job title.\n2. Top skills in 4 lines, renamed to match posting.\n3. ${pr}\n4. include_scaleai only if NLP/LLM/AI. include_airtel only if telecom/KPI/engineering.\n5. Order projects by relevance.\n\nONLY valid JSON:\n{"overview":"str","target_title":"str","skills":[{"label":"str","items":"str"}],"include_scaleai":bool,"include_airtel":bool,"freelance_bullets":["id"],"huawei_bullets":["id"],"airtel_bullets":["id"],"projects":["id"],"filename_suffix":"str"}`;
 }
 
-const COVER_SYS = `You are an elite cover letter writer who creates highly specific, compelling cover letters that sound human and authentic. NEVER use generic phrases like "I am writing to express my interest" or "I am excited to apply."
+// Research-backed cover letter system prompt (2026 best practices)
+// Sources: ResumeLab/UVA 2025, Resume Genius 2025, Interview Guys 2026, Kickresume 2026
+// Format: Problem-Solution (gold standard per Interview Guys 2026 analysis)
+// Length: 250-350 words (70% of HMs prefer 250-400, 49% prefer half-page)
+// Structure: 5-block (Header, Greeting, Hook, Body, Close)
+const COVER_SYS = `You are an elite cover letter writer using the PROBLEM-SOLUTION format, the gold standard for 2026 (per Interview Guys research of 80+ studies). 94% of hiring managers say cover letters influence decisions. 80% detect and reject generic AI content. Every word must be authentic and specific.
 
 CANDIDATE:
-- Name: ${MD.name}, Location: ${MD.location}, Email: ${MD.email}, Phone: ${MD.phone}
-- MS Data Analytics at Northeastern University Vancouver (GPA 3.8/4.0, graduating Jun 2026)
-- B.Eng Electrical & Electronic Engineering, Obafemi Awolowo University
-- 5+ years analytics: freelance data analyst (churn models -12% risk, automated dashboards, SQL 500K+ records, time-series forecasting), Huawei intern (diagnostics -15% failures), Scale AI NLP/LLM pipelines
-- Projects: LiDAR with Lumotive, Faster R-CNN FruitNet, bike sharing ML (R\u00B2>0.91), credit risk SHAP, ULMFiT text classification, JobForge React app
-- Skills: Python, R, SQL, PyTorch, TensorFlow, Scikit-learn, Docker, AWS, Tableau, Power BI
+- Name: ${MD.name} | ${MD.location} | ${MD.email} | ${MD.phone}
+- MS Data Analytics, Northeastern University Vancouver (GPA 3.8/4.0, graduating Jun 2026)
+- B.Eng Electrical & Electronic Engineering, Obafemi Awolowo University Nigeria
+- 5+ years analytics: freelance (churn models -12% risk, Power BI/Tableau dashboards -25% manual effort, SQL pipelines 500K+ records, R time-series forecasting), Huawei intern (diagnostics -15% failures), Scale AI NLP/LLM pipelines
+- Key projects: LiDAR point cloud with Lumotive, Faster R-CNN FruitNet on HuggingFace, bike sharing ML pipeline R2>0.91, credit risk SHAP, ULMFiT text classification, JobForge React app, Streamlit analytics dashboard
+- Skills: Python, R, SQL, PyTorch, TensorFlow, Scikit-learn, Docker, AWS, Tableau, Power BI, Git
 
-WRITING RULES:
-1. OPENING (2-3 sentences): Bold specific hook. Reference something concrete about the company. NO generic openings ever.
-2. BODY 1 (3-4 sentences): 2-3 most relevant experiences with specific numbers. Mirror exact keywords from the posting.
-3. BODY 2 (2-3 sentences): Deeper fit \u2014 connect engineering + analytics background to the role's unique challenges.
-4. CLOSING (2 sentences): Confident, forward-looking. Specific enthusiasm. Clear call to action. NO "I would welcome the opportunity."
-5. 250-320 words MAX. Every sentence earns its place.
-6. Tone: Confident, specific, human. Not a template.
-7. Sign as "${MD.name}"
+PROBLEM-SOLUTION FORMAT (mandatory structure):
 
-ONLY valid JSON:\n{"company_name":"str","role_title":"str","date":"April 23, 2026","salutation":"str","body":"str (\\n\\n for paragraphs)","closing":"Sincerely,"}`;
+PARAGRAPH 1 - THE HOOK (2-3 sentences):
+Identify a specific PROBLEM or CHALLENGE the company faces based on the job posting (their growth area, technical challenge, or business need). Show you understand it. Reference something concrete about the company. NEVER use "I am writing to express my interest" or "I am excited to apply" or any variation. Start with the company's challenge or an achievement.
+
+PARAGRAPH 2 - THE SOLUTION (3-4 sentences):
+Present yourself as the solution. Connect your 2-3 most relevant experiences DIRECTLY to their stated needs. Use specific metrics (12% risk reduction, 15% failure reduction, R2>0.91, 500K+ records). Mirror exact keywords from the job posting naturally.
+
+PARAGRAPH 3 - THE FIT (2-3 sentences):
+Explain WHY you specifically (not just anyone with these skills) are right for THIS company. Connect your engineering + analytics background to their unique challenges. Show genuine understanding of what the team does or the company's mission.
+
+PARAGRAPH 4 - THE CLOSE (1-2 sentences):
+Confident, forward-looking. Reference a specific aspect of the role you're eager to tackle. End with clear next step. NEVER use "I would welcome the opportunity" or "Thank you for considering my application."
+
+RULES:
+- 250-350 words TOTAL (70% of HMs prefer this range)
+- Every sentence answers "Why should we hire this person?"
+- Mirror 3-5 keywords from the posting naturally
+- Tone: Confident, specific, human. Like a sharp colleague wrote it, not a template
+- Sign as "${MD.name}"
+
+ONLY valid JSON, no markdown:
+{"company_name":"str","role_title":"str","date":"April 23, 2026","salutation":"Dear [name or Hiring Manager],","body":"str (use \\n\\n between paragraphs)","closing":"Sincerely,"}`;
 
 const C = {
   bg: "#06080F", surface: "#0F1219", surfaceR: "#151A24",
-  border: "#1C2333", borderH: "#2A3347", borderF: "#3B82F6",
+  border: "#1C2333", borderH: "#2A3347",
   accent: "#3B82F6", accentD: "#1D4ED8", accentS: "rgba(59,130,246,0.08)",
   text: "#E8ECF4", textM: "#8B95A9", textD: "#5A6478",
   success: "#10B981", error: "#EF4444", errorS: "rgba(239,68,68,0.06)",
@@ -119,6 +137,7 @@ export default function App() {
   const [url, setUrl] = useState("");
   const [instr, setInstr] = useState("");
   const [pages, setPages] = useState(1);
+  const [genType, setGenType] = useState("resume"); // resume | both
   const [status, setStatus] = useState("idle");
   const [prog, setProg] = useState("");
   const [err, setErr] = useState("");
@@ -139,19 +158,16 @@ export default function App() {
     }
   }, [posting, mode]);
 
-  // Rotate tips every 6 seconds
   useEffect(() => {
     if (status !== "idle") return;
-    const interval = setInterval(() => {
-      setTipIdx(prev => (prev + 1) % TIPS.length);
-    }, 6000);
-    return () => clearInterval(interval);
+    const iv = setInterval(() => setTipIdx(p => (p + 1) % TIPS.length), 6000);
+    return () => clearInterval(iv);
   }, [status]);
 
-  async function apiCall(system, msg) {
+  async function apiCall(system, msg, maxTok) {
     const r = await fetch("/api/tailor", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: pages === 2 ? 2000 : 1500, system, messages: [{ role: "user", content: msg }] })
+      body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: maxTok || 1500, system, messages: [{ role: "user", content: msg }] })
     });
     const d = await r.json();
     if (d.error) throw new Error(d.error?.message || JSON.stringify(d.error));
@@ -160,37 +176,45 @@ export default function App() {
 
   async function scrapeUrl(u) {
     const r = await fetch("/api/scrape", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url: u }) });
-    const d = await r.json();
-    if (d.error) throw new Error(d.error);
-    return d.text;
+    const d = await r.json(); if (d.error) throw new Error(d.error); return d.text;
   }
 
-  async function handleTailor() {
+  async function handleSubmit() {
     let txt = posting;
     setRes(null); setCov(null); setErr(""); setTab("resume"); setCopied(false);
     try {
       if (mode === "url") {
         if (!url.trim()) return;
         setStatus("fetching"); setProg("Fetching job posting...");
-        txt = await scrapeUrl(url.trim());
-        setPosting(txt);
+        txt = await scrapeUrl(url.trim()); setPosting(txt);
       }
       if (!txt.trim()) { setErr("No text extracted. Try pasting manually."); setStatus("error"); return; }
-      setStatus("analyzing"); setProg("Tailoring resume...");
       const extra = instr.trim() ? `\nADDITIONAL INSTRUCTIONS: ${instr.trim()}` : "";
-      const raw = await apiCall(makeResumeSys(pages), `Job posting:\n${txt}${extra}`);
-      let p; try { p = JSON.parse(raw); } catch { throw new Error("Parse failed. Try again."); }
+
+      // Resume
+      setStatus("analyzing"); setProg("Tailoring resume...");
+      const raw = await apiCall(makeResumeSys(pages), `Job posting:\n${txt}${extra}`, pages === 2 ? 2000 : 1500);
+      let p; try { p = JSON.parse(raw); } catch { throw new Error("Resume parse failed. Try again."); }
       setRes(p);
+
+      // Cover letter (if selected)
+      if (genType === "both") {
+        setStatus("cover"); setProg("Writing cover letter...");
+        const cRaw = await apiCall(COVER_SYS, `Job posting:\n${txt}${extra}\n\nTailored resume overview: ${p.overview}\nTarget role: ${p.target_title}`, 1500);
+        let cp; try { cp = JSON.parse(cRaw); } catch { throw new Error("Cover letter parse failed. Try again."); }
+        setCov(cp);
+      }
+
       setStatus("done"); setProg("");
     } catch (e) { setErr(e.message); setStatus("error"); setProg(""); }
   }
 
-  async function handleCoverLetter() {
+  async function handleCoverLetterAfter() {
     setCovLoading(true); setErr("");
     try {
       const extra = instr.trim() ? `\nADDITIONAL INSTRUCTIONS: ${instr.trim()}` : "";
-      const cRaw = await apiCall(COVER_SYS, `Job posting:\n${posting}${extra}\n\nTailored resume overview: ${res.overview}\nTarget role: ${res.target_title}`);
-      let cp; try { cp = JSON.parse(cRaw); } catch { throw new Error("Cover letter parse failed. Try again."); }
+      const cRaw = await apiCall(COVER_SYS, `Job posting:\n${posting}${extra}\n\nTailored resume overview: ${res.overview}\nTarget role: ${res.target_title}`, 1500);
+      let cp; try { cp = JSON.parse(cRaw); } catch { throw new Error("Cover letter parse failed."); }
       setCov(cp); setTab("cover");
     } catch (e) { setErr(e.message); }
     setCovLoading(false);
@@ -199,18 +223,13 @@ export default function App() {
   const getExp = id => MD.experience.find(e => e.id === id);
   const getBul = (eid, ids) => { const e = getExp(eid); return e ? ids.map(b => e.bullets.find(x => x.id === b)).filter(Boolean) : []; };
   const getProj = pid => MD.projects.find(p => p.id === pid);
-
-  function reset() { setStatus("idle"); setRes(null); setCov(null); setPosting(""); setUrl(""); setErr(""); setProg(""); setInstr(""); setTab("resume"); setCopied(false); setCovLoading(false); }
+  function reset() { setStatus("idle"); setRes(null); setCov(null); setPosting(""); setUrl(""); setErr(""); setProg(""); setInstr(""); setTab("resume"); setCopied(false); setCovLoading(false); setGenType("resume"); }
 
   function doDownload(ref, filename) {
     if (!ref.current) return;
     const w = window.open("", "_blank");
-    w.document.write(`<!DOCTYPE html><html><head><title>${filename}</title>
-      <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-      <style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'DM Sans',sans-serif;padding:40px 52px;color:#1a1a1a;line-height:1.5;max-width:800px;margin:0 auto}@media print{body{padding:0}@page{margin:0.4in 0.5in;size:letter}}</style>
-    </head><body>${ref.current.innerHTML}</body></html>`);
-    w.document.close();
-    setTimeout(() => w.print(), 600);
+    w.document.write(`<!DOCTYPE html><html><head><title>${filename}</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'DM Sans',sans-serif;padding:40px 52px;color:#1a1a1a;line-height:1.5;max-width:800px;margin:0 auto}@media print{body{padding:0}@page{margin:0.4in 0.5in;size:letter}}</style></head><body>${ref.current.innerHTML}</body></html>`);
+    w.document.close(); setTimeout(() => w.print(), 600);
   }
 
   function doCopy(ref) {
@@ -218,7 +237,7 @@ export default function App() {
     navigator.clipboard.writeText(ref.current.innerText).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
   }
 
-  const loading = ["fetching","analyzing"].includes(status);
+  const loading = ["fetching","analyzing","cover"].includes(status);
   const canGo = mode === "url" ? url.trim() : posting.trim();
   const tip = TIPS[tipIdx];
 
@@ -258,16 +277,14 @@ export default function App() {
             </div>
 
             <div style={{ padding: "20px 24px" }}>
-              {mode === "text" && (
+              {mode === "text" ? (
                 <textarea ref={taRef} value={posting} onChange={e => setPosting(e.target.value)}
                   disabled={loading}
                   placeholder={"Paste the full job posting here...\n\nInclude job title, company, responsibilities, qualifications, and nice-to-haves."}
                   style={taS} onFocus={fB} onBlur={bB} />
-              )}
-
-              {mode === "url" && (
+              ) : (
                 <div style={{ position: "relative" }}>
-                  <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 12, color: C.textD }}>🔗</span>
+                  <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 12, color: C.textD }}>{"🔗"}</span>
                   <input value={url} onChange={e => setUrl(e.target.value)} disabled={loading}
                     placeholder="https://careers.company.com/job/data-analyst-12345"
                     style={{ width: "100%", background: C.bg, border: `1px solid ${C.border}`, borderRadius: 10, padding: "13px 16px 13px 36px", fontSize: 13, fontFamily: "'JetBrains Mono',monospace", color: C.text, outline: "none", boxSizing: "border-box" }}
@@ -275,7 +292,6 @@ export default function App() {
                 </div>
               )}
 
-              {/* Extra instructions */}
               <div style={{ marginTop: 14 }}>
                 <div style={{ fontSize: 12, fontWeight: 600, marginBottom: 5, display: "flex", gap: 6 }}>
                   <span>Extra Instructions</span>
@@ -287,10 +303,11 @@ export default function App() {
                   onFocus={fB} onBlur={bB} />
               </div>
 
-              {/* Page toggle + submit */}
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 16, flexWrap: "wrap", gap: 10 }}>
+              {/* Options row: pages + generate type */}
+              <div style={{ display: "flex", alignItems: "center", gap: 16, marginTop: 16, flexWrap: "wrap" }}>
+                {/* Pages */}
                 <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <span style={{ fontSize: 12, color: C.textM, marginRight: 4 }}>Pages:</span>
+                  <span style={{ fontSize: 12, color: C.textM }}>Pages:</span>
                   {[1, 2].map(n => (
                     <button key={n} onClick={() => setPages(n)} style={{
                       padding: "5px 14px", borderRadius: 7, border: `1.5px solid ${pages === n ? C.accent : C.border}`,
@@ -299,25 +316,40 @@ export default function App() {
                       fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit"
                     }}>{n}</button>
                   ))}
-                  {pages === 2 && <span style={{ fontSize: 10.5, color: C.textD, marginLeft: 4 }}>More detail included</span>}
                 </div>
 
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  {posting.length > 0 && mode === "text" && (
-                    <span style={{ fontSize: 11, color: C.textD, fontFamily: "'JetBrains Mono',monospace" }}>{posting.split(/\s+/).filter(Boolean).length}w</span>
-                  )}
-                  <button onClick={handleTailor} disabled={!canGo || loading}
-                    style={{
-                      padding: "10px 28px", borderRadius: 10, border: "none",
-                      background: !canGo ? C.border : `linear-gradient(135deg,${C.accent},${C.accentD})`,
-                      color: !canGo ? C.textD : "#fff",
-                      fontSize: 13, fontWeight: 600, cursor: !canGo ? "not-allowed" : "pointer",
-                      fontFamily: "inherit", minWidth: 150,
-                      boxShadow: canGo && !loading ? "0 2px 12px rgba(59,130,246,0.25)" : "none"
-                    }}>
-                    {loading ? <span style={{ display: "flex", alignItems: "center", gap: 8 }}><span className="rf-spin"/>{prog}</span> : "Tailor Resume"}
-                  </button>
+                {/* Generate type */}
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <span style={{ fontSize: 12, color: C.textM }}>Generate:</span>
+                  {[["resume","Resume Only"],["both","Resume + Cover Letter"]].map(([k,l]) => (
+                    <button key={k} onClick={() => setGenType(k)} style={{
+                      padding: "5px 14px", borderRadius: 7,
+                      border: `1.5px solid ${genType === k ? (k === "both" ? C.emerald : C.accent) : C.border}`,
+                      background: genType === k ? (k === "both" ? C.emeraldS : C.accentS) : "transparent",
+                      color: genType === k ? (k === "both" ? C.emerald : C.accent) : C.textD,
+                      fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit"
+                    }}>{l}</button>
+                  ))}
                 </div>
+              </div>
+
+              {/* Submit */}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", marginTop: 16, gap: 10 }}>
+                {posting.length > 0 && mode === "text" && (
+                  <span style={{ fontSize: 11, color: C.textD, fontFamily: "'JetBrains Mono',monospace", marginRight: "auto" }}>{posting.split(/\s+/).filter(Boolean).length}w</span>
+                )}
+                <button onClick={handleSubmit} disabled={!canGo || loading}
+                  style={{
+                    padding: "10px 28px", borderRadius: 10, border: "none",
+                    background: !canGo ? C.border : `linear-gradient(135deg,${C.accent},${C.accentD})`,
+                    color: !canGo ? C.textD : "#fff",
+                    fontSize: 13, fontWeight: 600, cursor: !canGo ? "not-allowed" : "pointer",
+                    fontFamily: "inherit", minWidth: 160,
+                    boxShadow: canGo && !loading ? "0 2px 12px rgba(59,130,246,0.25)" : "none"
+                  }}>
+                  {loading ? <span style={{ display: "flex", alignItems: "center", gap: 8 }}><span className="rf-spin"/>{prog}</span>
+                    : genType === "both" ? "Generate Both" : "Tailor Resume"}
+                </button>
               </div>
 
               {status === "error" && (
@@ -327,21 +359,19 @@ export default function App() {
           </div>
         )}
 
-        {/* TIPS & INSPIRATION — shown when idle */}
+        {/* TIPS */}
         {status === "idle" && (
-          <div style={{ marginTop: 18, background: C.surface, border: `1px solid ${C.border}`, borderRadius: 12, padding: "18px 22px", position: "relative", overflow: "hidden", minHeight: 80 }}>
+          <div style={{ marginTop: 18, background: C.surface, border: `1px solid ${C.border}`, borderRadius: 12, padding: "18px 22px" }}>
             <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
-              <div style={{ fontSize: 28, flexShrink: 0, lineHeight: 1 }}>{tip.icon}</div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: "0.06em", marginBottom: 4, textTransform: "uppercase" }}>{tip.cat}</div>
                 <div style={{ fontSize: 13.5, color: C.text, lineHeight: 1.6 }}>{tip.tip}</div>
               </div>
               <button onClick={() => setTipIdx((tipIdx + 1) % TIPS.length)}
-                style={{ flexShrink: 0, padding: "6px 12px", borderRadius: 7, border: `1px solid ${C.border}`, background: "transparent", color: C.textD, fontSize: 11, fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}>
-                Next tip \u2192
+                style={{ flexShrink: 0, padding: "6px 14px", borderRadius: 7, border: `1px solid ${C.border}`, background: "transparent", color: C.textD, fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}>
+                Next →
               </button>
             </div>
-            {/* Progress dots */}
             <div style={{ display: "flex", gap: 4, marginTop: 12, justifyContent: "center" }}>
               {TIPS.map((_, i) => (
                 <div key={i} onClick={() => setTipIdx(i)} style={{
@@ -357,6 +387,7 @@ export default function App() {
         {/* RESULTS */}
         {status === "done" && res && (
           <div>
+            {/* Tabs + actions */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, flexWrap: "wrap", gap: 10 }}>
               <div style={{ display: "flex", gap: 0, background: C.surface, border: `1px solid ${C.border}`, borderRadius: 10, padding: 3 }}>
                 {[["resume","Resume"], ...(cov ? [["cover","Cover Letter"]] : [])].map(([k,l]) => (
@@ -369,21 +400,20 @@ export default function App() {
               </div>
               <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
                 <span style={{ fontSize: 12, color: C.success, fontWeight: 600, marginRight: 4 }}>
-                  \u2713 {tab === "resume" ? res.target_title : (cov?.company_name || "")}
+                  {"✓ "}{tab === "resume" ? res.target_title : (cov?.company_name || "")}
                 </span>
                 <button onClick={() => doCopy(tab === "resume" ? rRef : cRef)} style={bSm(false)}>{copied ? "Copied!" : "Copy"}</button>
-                <button onClick={() => doDownload(tab === "resume" ? rRef : cRef, tab === "resume" ? `Resume_${res.filename_suffix}` : `CoverLetter_${cov?.company_name || ""}`)} style={{
-                  ...bSm(false), background: "linear-gradient(135deg,#10B981,#059669)", border: "none"
-                }}>
-                  \u2B07 Download PDF
+                <button onClick={() => doDownload(tab === "resume" ? rRef : cRef, tab === "resume" ? `Resume_${res.filename_suffix}` : `CoverLetter_${cov?.company_name || ""}`)}
+                  style={{ ...bSm(false), background: "linear-gradient(135deg,#10B981,#059669)", border: "none" }}>
+                  {"⬇ Download PDF"}
                 </button>
               </div>
             </div>
 
-            {/* Generate Cover Letter */}
+            {/* Generate Cover Letter button (after resume, if not already generated) */}
             {tab === "resume" && !cov && (
               <div style={{ marginBottom: 16 }}>
-                <button onClick={handleCoverLetter} disabled={covLoading}
+                <button onClick={handleCoverLetterAfter} disabled={covLoading}
                   style={{
                     width: "100%", padding: "14px 24px", borderRadius: 10,
                     border: `1.5px solid ${C.emerald}`, background: C.emeraldS,
@@ -391,7 +421,7 @@ export default function App() {
                     cursor: covLoading ? "wait" : "pointer", fontFamily: "inherit",
                     display: "flex", alignItems: "center", justifyContent: "center", gap: 10
                   }}>
-                  {covLoading ? <><span className="rf-spin-green"/>Writing tailored cover letter...</> : <>\u270D\uFE0F Generate Cover Letter for {res.target_title}</>}
+                  {covLoading ? <><span className="rf-spin-green"/>{"Writing tailored cover letter..."}</> : <>{"✍️ Generate Cover Letter for " + res.target_title}</>}
                 </button>
               </div>
             )}
@@ -407,7 +437,7 @@ export default function App() {
                   <div style={{ fontSize: 21, fontWeight: 700, color: "#1E3A5F", letterSpacing: "0.05em" }}>{MD.name.toUpperCase()}</div>
                 </div>
                 <div style={{ textAlign: "center", fontSize: 11, color: "#777", marginBottom: 14 }}>
-                  {MD.location} &nbsp;|&nbsp; {MD.email} &nbsp;|&nbsp; {MD.phone} &nbsp;|&nbsp; {MD.linkedin}
+                  {MD.location} {" | "} {MD.email} {" | "} {MD.phone} {" | "} {MD.linkedin}
                 </div>
                 <SH t="PROFESSIONAL SUMMARY"/>
                 <p style={{ fontSize: 11.5, color: "#333", margin: "5px 0 8px", lineHeight: 1.65 }}>{res.overview}</p>
@@ -439,7 +469,7 @@ export default function App() {
                       <span style={{ fontWeight: 600 }}>{p.title}</span>
                       <span style={{ color: "#777", flexShrink: 0, marginLeft: 10 }}>{p.dates}</span>
                     </div>
-                    <div style={{ fontSize: 11, color: "#333", marginTop: 1, paddingLeft: 10 }}>{"\u2022"} {p.text}</div>
+                    <div style={{ fontSize: 11, color: "#333", marginTop: 1, paddingLeft: 10 }}>{"• " + p.text}</div>
                   </div>);
                 })}
               </div>
@@ -463,7 +493,7 @@ export default function App() {
             )}
 
             <div style={{ textAlign: "center", marginTop: 14, fontSize: 11, color: C.textD }}>
-              "Download PDF" opens your browser's save dialog \u2014 select "Save as PDF" as the destination
+              {"\"Download PDF\" opens your browser's save dialog — select \"Save as PDF\" as the destination"}
             </div>
           </div>
         )}
@@ -486,10 +516,10 @@ function EB({ exp, bul }) {
   if (!exp) return null;
   return (<div style={{ marginBottom: 7 }}>
     <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11.5 }}>
-      <span><span style={{ fontWeight: 600 }}>{exp.title}</span><span style={{ color: "#777" }}> | {exp.company}</span></span>
+      <span><span style={{ fontWeight: 600 }}>{exp.title}</span><span style={{ color: "#777" }}>{" | " + exp.company}</span></span>
       <span style={{ color: "#777", flexShrink: 0, marginLeft: 10 }}>{exp.dates}</span>
     </div>
-    {bul.map((b,i) => <div key={i} style={{ fontSize: 11, color: "#333", marginTop: 2, paddingLeft: 10, lineHeight: 1.55 }}>{"\u2022"} {b.text}</div>)}
+    {bul.map((b,i) => <div key={i} style={{ fontSize: 11, color: "#333", marginTop: 2, paddingLeft: 10, lineHeight: 1.55 }}>{"• " + b.text}</div>)}
   </div>);
 }
 
