@@ -11,8 +11,7 @@ const MD = {
     { degree: "Bachelor of Engineering, Electrical & Electronic Engineering", school: "Obafemi Awolowo University, Nigeria", dates: "2015 \u2013 2020", gpa: null, coursework: "Network Systems, Optimization, Applied Problem-Solving, Quantitative Methods" }
   ],
   experience: [
-    {
-      id: "freelance", title: "Freelance Data Analyst", company: "Remote", dates: "Jan 2021 \u2013 Present",
+    { id: "freelance", title: "Freelance Data Analyst", company: "Remote", dates: "Jan 2021 \u2013 Present",
       bullets: [
         { id: "churn", text: "Built churn prediction models (Random Forest, Logistic Regression, GLM) in Python that reduced client risk exposure by 12% and informed data-driven retention strategies." },
         { id: "dashboards", text: "Developed automated Power BI and Tableau dashboards for revenue forecasting, improving retail planning accuracy and reducing manual reporting effort by 25%." },
@@ -23,15 +22,13 @@ const MD = {
         { id: "presentations", text: "Prepared clear analytical summaries and presentations for non-technical stakeholders to guide financial strategy and business planning." }
       ]
     },
-    {
-      id: "huawei", title: "Field Engineering Intern", company: "Huawei Technologies, Nigeria", dates: "May 2019 \u2013 Aug 2019",
+    { id: "huawei", title: "Field Engineering Intern", company: "Huawei Technologies, Nigeria", dates: "May 2019 \u2013 Aug 2019",
       bullets: [
         { id: "diagnostics", text: "Applied data-driven diagnostics to network subsystems, reducing system failures by 15% through root-cause analysis and preventive maintenance." },
         { id: "reports", text: "Produced technical performance reports for senior leadership, translating complex metrics into actionable operational recommendations." }
       ]
     },
-    {
-      id: "airtel", title: "Telecom Engineering Intern", company: "Airtel Nigeria", dates: "Jul 2019 \u2013 Dec 2019",
+    { id: "airtel", title: "Telecom Engineering Intern", company: "Airtel Nigeria", dates: "Jul 2019 \u2013 Dec 2019",
       bullets: [
         { id: "kpi", text: "Monitored KPIs and maintained incident logs for NOC/field teams, contributing to root-cause chronologies used in post-incident reviews." },
         { id: "briefs", text: "Produced concise status briefs for non-technical stakeholders, improving decision cycle time." }
@@ -60,9 +57,52 @@ const MD = {
   }
 };
 
-const RESUME_SYS = `You are a resume tailoring engine. Given a job posting and candidate data, produce JSON.\nCANDIDATE: ${JSON.stringify(MD)}\n\nRULES:\n1. 2-3 sentence overview matching job title and posting language.\n2. Top skills in 4 grouped lines, renamed to match posting.\n3. Best 3-4 bullets per role. include_scaleai only if NLP/LLM/AI. include_airtel only if telecom/KPI/engineering.\n4. Best 3-4 projects by relevance.\n\nONLY valid JSON:\n{"overview":"str","target_title":"str","skills":[{"label":"str","items":"str"}],"include_scaleai":bool,"include_airtel":bool,"freelance_bullets":["id"],"huawei_bullets":["id"],"airtel_bullets":["id"],"projects":["id"],"filename_suffix":"str"}`;
+const TIPS = [
+  { cat: "ATS", icon: "\uD83E\uDD16", tip: "Most Canadian employers use ATS. Keep formatting simple \u2014 no tables, columns, or graphics in your resume file." },
+  { cat: "Keywords", icon: "\uD83D\uDD11", tip: "Mirror exact phrases from the job posting. If they say 'data visualization,' don't write 'data viz' \u2014 ATS matches literal strings." },
+  { cat: "Numbers", icon: "\uD83D\uDCCA", tip: "Quantify everything. '12% churn reduction' beats 'reduced churn significantly' every time." },
+  { cat: "Length", icon: "\uD83D\uDCCF", tip: "1 page is standard for <10 years experience in Canada. Recruiters spend 6\u20137 seconds on first scan." },
+  { cat: "Summary", icon: "\uD83C\uDFAF", tip: "Your professional summary should mirror the job title. If they want a 'Data Scientist,' lead with 'Data Scientist with...'" },
+  { cat: "Skills", icon: "\u2699\uFE0F", tip: "Group skills by category and lead with the ones mentioned in the posting. Order matters \u2014 recruiters scan left to right." },
+  { cat: "Projects", icon: "\uD83D\uDE80", tip: "Academic projects count. Frame them with impact: what you built, what tools you used, and what the result was." },
+  { cat: "Cover Letter", icon: "\u2709\uFE0F", tip: "Never start with 'I am writing to express my interest.' Open with a specific hook about the company or role." },
+  { cat: "Tailoring", icon: "\u2702\uFE0F", tip: "A generic resume gets generic results. Every application should feel like it was written specifically for that role." },
+  { cat: "Action Verbs", icon: "\uD83D\uDCAA", tip: "Start bullets with strong verbs: Built, Designed, Optimized, Deployed, Reduced, Automated, Led, Delivered." },
+  { cat: "Gaps", icon: "\uD83D\uDD52", tip: "Freelance work fills gaps perfectly. Frame it with client impact and deliverables, not just 'freelanced.'" },
+  { cat: "LinkedIn", icon: "\uD83D\uDD17", tip: "Your LinkedIn should match your resume. Canadian recruiters will check \u2014 inconsistencies raise red flags." },
+  { cat: "File Name", icon: "\uD83D\uDCC1", tip: "Name your file 'FirstName_LastName_Role_Company.pdf' \u2014 not 'resume_final_v3(2).docx'." },
+  { cat: "PGWP", icon: "\uD83C\uDDE8\uD83C\uDDE6", tip: "For Canadian roles, mentioning work authorization (PGWP eligible) can remove a major screening concern upfront." },
+  { cat: "GPA", icon: "\uD83C\uDF93", tip: "Include your GPA if it's 3.5+ (yours is 3.8). Drop it once you have 3+ years of full-time experience." },
+  { cat: "Fonts", icon: "\uD83D\uDDA5\uFE0F", tip: "Stick to Calibri, Arial, or Garamond at 10\u201312pt. Creative fonts get mangled by ATS parsers." }
+];
 
-const COVER_SYS = `Write a cover letter for ${MD.name}, ${MD.location}. MS Data Analytics at Northeastern (3.8 GPA). Under 350 words, company-specific, confident.\nONLY JSON:\n{"company_name":"str","date":"April 23, 2026","salutation":"str","body":"str (\\n\\n for paragraphs)","closing":"str"}`;
+function makeResumeSys(pages) {
+  const pageRule = pages === 1
+    ? "CRITICAL: Select ONLY the most relevant content to fit on ONE page. Pick 3-4 bullets max per role, 3-4 projects max."
+    : "This is a 2-page resume. Include more detail: 4-5 bullets per role, 5-6 projects, and expand the overview to 3-4 sentences.";
+  return `You are a resume tailoring engine. Given a job posting and candidate data, produce JSON.\nCANDIDATE: ${JSON.stringify(MD)}\n\nRULES:\n1. 2-3 sentence overview matching job title and posting language.\n2. Top skills in 4 grouped lines, renamed to match posting.\n3. ${pageRule}\n4. include_scaleai only if NLP/LLM/AI. include_airtel only if telecom/KPI/engineering.\n5. Order projects by relevance.\n\nONLY valid JSON:\n{"overview":"str","target_title":"str","skills":[{"label":"str","items":"str"}],"include_scaleai":bool,"include_airtel":bool,"freelance_bullets":["id"],"huawei_bullets":["id"],"airtel_bullets":["id"],"projects":["id"],"filename_suffix":"str"}`;
+}
+
+const COVER_SYS = `You are an elite cover letter writer who creates highly specific, compelling cover letters that sound human and authentic. NEVER use generic phrases like "I am writing to express my interest" or "I am excited to apply."
+
+CANDIDATE:
+- Name: ${MD.name}, Location: ${MD.location}, Email: ${MD.email}, Phone: ${MD.phone}
+- MS Data Analytics at Northeastern University Vancouver (GPA 3.8/4.0, graduating Jun 2026)
+- B.Eng Electrical & Electronic Engineering, Obafemi Awolowo University
+- 5+ years analytics: freelance data analyst (churn models -12% risk, automated dashboards, SQL 500K+ records, time-series forecasting), Huawei intern (diagnostics -15% failures), Scale AI NLP/LLM pipelines
+- Projects: LiDAR with Lumotive, Faster R-CNN FruitNet, bike sharing ML (R\u00B2>0.91), credit risk SHAP, ULMFiT text classification, JobForge React app
+- Skills: Python, R, SQL, PyTorch, TensorFlow, Scikit-learn, Docker, AWS, Tableau, Power BI
+
+WRITING RULES:
+1. OPENING (2-3 sentences): Bold specific hook. Reference something concrete about the company. NO generic openings ever.
+2. BODY 1 (3-4 sentences): 2-3 most relevant experiences with specific numbers. Mirror exact keywords from the posting.
+3. BODY 2 (2-3 sentences): Deeper fit \u2014 connect engineering + analytics background to the role's unique challenges.
+4. CLOSING (2 sentences): Confident, forward-looking. Specific enthusiasm. Clear call to action. NO "I would welcome the opportunity."
+5. 250-320 words MAX. Every sentence earns its place.
+6. Tone: Confident, specific, human. Not a template.
+7. Sign as "${MD.name}"
+
+ONLY valid JSON:\n{"company_name":"str","role_title":"str","date":"April 23, 2026","salutation":"str","body":"str (\\n\\n for paragraphs)","closing":"Sincerely,"}`;
 
 const C = {
   bg: "#06080F", surface: "#0F1219", surfaceR: "#151A24",
@@ -70,57 +110,15 @@ const C = {
   accent: "#3B82F6", accentD: "#1D4ED8", accentS: "rgba(59,130,246,0.08)",
   text: "#E8ECF4", textM: "#8B95A9", textD: "#5A6478",
   success: "#10B981", error: "#EF4444", errorS: "rgba(239,68,68,0.06)",
-  purple: "#8B5CF6", purpleS: "rgba(139,92,246,0.08)",
-  amber: "#F59E0B", amberS: "rgba(245,158,11,0.08)"
+  emerald: "#10B981", emeraldS: "rgba(16,185,129,0.08)"
 };
-
-function buildPrompt(posting, instructions, wantCover) {
-  const sk = Object.entries(MD.skills).map(([k,v]) => `  ${k}: ${v}`).join("\n");
-  const ex = MD.experience.map(e => `${e.title} | ${e.company} | ${e.dates}\n` + e.bullets.map(b => `  - [${b.id}] ${b.text}`).join("\n")).join("\n\n");
-  const pr = MD.projects.map(p => `  - [${p.id}] ${p.title} (${p.dates}): ${p.text}`).join("\n");
-
-  let prompt = `RESUMEFIT TAILORING REQUEST \u2014 Please generate a tailored 1-page resume as a .docx file for the following job posting.
-
-===== JOB POSTING =====
-${posting.trim()}
-
-===== MY MASTER RESUME DATA =====
-CONTACT: ${MD.name} | ${MD.location} | ${MD.email} | ${MD.phone} | ${MD.linkedin}
-
-EDUCATION:
-  ${MD.education[0].degree} \u2014 ${MD.education[0].school} (${MD.education[0].dates}, GPA: ${MD.education[0].gpa})
-  Coursework: ${MD.education[0].coursework}
-  ${MD.education[1].degree} \u2014 ${MD.education[1].school} (${MD.education[1].dates})
-
-SKILLS:
-${sk}
-
-EXPERIENCE:
-${ex}
-
-PROJECTS:
-${pr}
-
-===== TAILORING RULES =====
-1. Write a 2-3 sentence PROFESSIONAL SUMMARY matching the job title and mirroring the posting's language.
-2. Select & reorder the TOP skills into 4 grouped lines. Rename categories to match the posting.
-3. Pick the best 3-4 bullets per experience role. Include Scale AI bullet ONLY if posting mentions NLP/LLM/AI. Include Airtel ONLY if relevant.
-4. Pick the best 3-4 projects ordered by relevance.
-5. Generate as a professional .docx file, 1 page, clean ATS-friendly formatting.`;
-
-  if (instructions.trim()) prompt += `\n\n===== EXTRA INSTRUCTIONS =====\n${instructions.trim()}`;
-  if (wantCover) prompt += `\n\n===== ALSO GENERATE =====\nA tailored cover letter (.docx) for this same posting. Under 350 words, company-specific, confident. Sign as "${MD.name}".`;
-  return prompt;
-}
 
 export default function App() {
   const [mode, setMode] = useState("text");
   const [posting, setPosting] = useState("");
   const [url, setUrl] = useState("");
   const [instr, setInstr] = useState("");
-  const [wantCover, setWantCover] = useState(false);
-  const [genMode, setGenMode] = useState("api");
-  const [sent, setSent] = useState(false);
+  const [pages, setPages] = useState(1);
   const [status, setStatus] = useState("idle");
   const [prog, setProg] = useState("");
   const [err, setErr] = useState("");
@@ -128,6 +126,8 @@ export default function App() {
   const [cov, setCov] = useState(null);
   const [tab, setTab] = useState("resume");
   const [copied, setCopied] = useState(false);
+  const [covLoading, setCovLoading] = useState(false);
+  const [tipIdx, setTipIdx] = useState(Math.floor(Math.random() * TIPS.length));
   const rRef = useRef(null);
   const cRef = useRef(null);
   const taRef = useRef(null);
@@ -139,10 +139,19 @@ export default function App() {
     }
   }, [posting, mode]);
 
+  // Rotate tips every 6 seconds
+  useEffect(() => {
+    if (status !== "idle") return;
+    const interval = setInterval(() => {
+      setTipIdx(prev => (prev + 1) % TIPS.length);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [status]);
+
   async function apiCall(system, msg) {
     const r = await fetch("/api/tailor", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1500, system, messages: [{ role: "user", content: msg }] })
+      body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: pages === 2 ? 2000 : 1500, system, messages: [{ role: "user", content: msg }] })
     });
     const d = await r.json();
     if (d.error) throw new Error(d.error?.message || JSON.stringify(d.error));
@@ -150,16 +159,13 @@ export default function App() {
   }
 
   async function scrapeUrl(u) {
-    const r = await fetch("/api/scrape", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url: u })
-    });
+    const r = await fetch("/api/scrape", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url: u }) });
     const d = await r.json();
     if (d.error) throw new Error(d.error);
     return d.text;
   }
 
-  async function goApi() {
+  async function handleTailor() {
     let txt = posting;
     setRes(null); setCov(null); setErr(""); setTab("resume"); setCopied(false);
     try {
@@ -170,48 +176,41 @@ export default function App() {
         setPosting(txt);
       }
       if (!txt.trim()) { setErr("No text extracted. Try pasting manually."); setStatus("error"); return; }
-
       setStatus("analyzing"); setProg("Tailoring resume...");
       const extra = instr.trim() ? `\nADDITIONAL INSTRUCTIONS: ${instr.trim()}` : "";
-      const raw = await apiCall(RESUME_SYS, `Job posting:\n${txt}${extra}`);
+      const raw = await apiCall(makeResumeSys(pages), `Job posting:\n${txt}${extra}`);
       let p; try { p = JSON.parse(raw); } catch { throw new Error("Parse failed. Try again."); }
       setRes(p);
-
-      if (wantCover) {
-        setStatus("cover"); setProg("Writing cover letter...");
-        const cRaw = await apiCall(COVER_SYS, `Job posting:\n${txt}${extra}\nOverview: ${p.overview}\nCandidate: ${MD.name}, ${MD.location}`);
-        let cp; try { cp = JSON.parse(cRaw); } catch { throw new Error("Cover letter parse failed."); }
-        setCov(cp);
-      }
       setStatus("done"); setProg("");
     } catch (e) { setErr(e.message); setStatus("error"); setProg(""); }
   }
 
-  function goChat() {
-    let txt = posting;
-    if (!txt.trim()) return;
-    const prompt = buildPrompt(txt, instr, wantCover);
-    setSent(true);
-    if (typeof window !== "undefined" && typeof window.sendPrompt === "function") {
-      window.sendPrompt(prompt);
-    } else {
-      navigator.clipboard.writeText(prompt).then(() => {});
-    }
+  async function handleCoverLetter() {
+    setCovLoading(true); setErr("");
+    try {
+      const extra = instr.trim() ? `\nADDITIONAL INSTRUCTIONS: ${instr.trim()}` : "";
+      const cRaw = await apiCall(COVER_SYS, `Job posting:\n${posting}${extra}\n\nTailored resume overview: ${res.overview}\nTarget role: ${res.target_title}`);
+      let cp; try { cp = JSON.parse(cRaw); } catch { throw new Error("Cover letter parse failed. Try again."); }
+      setCov(cp); setTab("cover");
+    } catch (e) { setErr(e.message); }
+    setCovLoading(false);
   }
-
-  function handleGo() { if (genMode === "chat") goChat(); else goApi(); }
 
   const getExp = id => MD.experience.find(e => e.id === id);
   const getBul = (eid, ids) => { const e = getExp(eid); return e ? ids.map(b => e.bullets.find(x => x.id === b)).filter(Boolean) : []; };
   const getProj = pid => MD.projects.find(p => p.id === pid);
 
-  function reset() { setStatus("idle"); setRes(null); setCov(null); setSent(false); setPosting(""); setUrl(""); setErr(""); setProg(""); setInstr(""); setTab("resume"); setCopied(false); }
+  function reset() { setStatus("idle"); setRes(null); setCov(null); setPosting(""); setUrl(""); setErr(""); setProg(""); setInstr(""); setTab("resume"); setCopied(false); setCovLoading(false); }
 
-  function doPrint(ref, title) {
+  function doDownload(ref, filename) {
     if (!ref.current) return;
     const w = window.open("", "_blank");
-    w.document.write(`<!DOCTYPE html><html><head><title>${title}</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'DM Sans',sans-serif;padding:36px 48px;color:#1a1a1a;line-height:1.5;max-width:800px;margin:0 auto}@media print{body{padding:0}@page{margin:0.4in 0.5in}}</style></head><body>${ref.current.innerHTML}</body></html>`);
-    w.document.close(); setTimeout(() => w.print(), 500);
+    w.document.write(`<!DOCTYPE html><html><head><title>${filename}</title>
+      <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+      <style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'DM Sans',sans-serif;padding:40px 52px;color:#1a1a1a;line-height:1.5;max-width:800px;margin:0 auto}@media print{body{padding:0}@page{margin:0.4in 0.5in;size:letter}}</style>
+    </head><body>${ref.current.innerHTML}</body></html>`);
+    w.document.close();
+    setTimeout(() => w.print(), 600);
   }
 
   function doCopy(ref) {
@@ -219,9 +218,9 @@ export default function App() {
     navigator.clipboard.writeText(ref.current.innerText).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
   }
 
-  const loading = ["fetching","analyzing","cover"].includes(status);
+  const loading = ["fetching","analyzing"].includes(status);
   const canGo = mode === "url" ? url.trim() : posting.trim();
-  const showInput = status !== "done" && !sent;
+  const tip = TIPS[tipIdx];
 
   return (
     <div style={{ minHeight: "100vh", background: C.bg, color: C.text, fontFamily: "'DM Sans','Segoe UI',system-ui,sans-serif" }}>
@@ -237,14 +236,14 @@ export default function App() {
               <div style={{ fontSize: 10.5, color: C.textD, letterSpacing: "0.02em" }}>RESUME & COVER LETTER TAILORING</div>
             </div>
           </div>
-          {(status === "done" || sent) && <button onClick={reset} style={{ ...bSm(true), padding: "7px 18px" }}>+ New</button>}
+          {status === "done" && <button onClick={reset} style={{ ...bSm(true), padding: "7px 18px" }}>+ New</button>}
         </div>
       </div>
 
       <div style={{ maxWidth: 920, margin: "0 auto", padding: "24px 20px" }}>
 
         {/* INPUT */}
-        {showInput && (
+        {status !== "done" && (
           <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 14, overflow: "hidden" }}>
             <div style={{ display: "flex", borderBottom: `1px solid ${C.border}` }}>
               {[["text","Paste Text"],["url","From URL"]].map(([m,l]) => (
@@ -276,6 +275,7 @@ export default function App() {
                 </div>
               )}
 
+              {/* Extra instructions */}
               <div style={{ marginTop: 14 }}>
                 <div style={{ fontSize: 12, fontWeight: 600, marginBottom: 5, display: "flex", gap: 6 }}>
                   <span>Extra Instructions</span>
@@ -287,55 +287,35 @@ export default function App() {
                   onFocus={fB} onBlur={bB} />
               </div>
 
-              {/* Gen mode */}
-              <div style={{ marginTop: 16, display: "flex", gap: 8 }}>
-                {[
-                  { key: "api", icon: "\u26A1", label: "Instant Preview", desc: "Live API call, renders in-app (needs API key in env vars)" },
-                  { key: "chat", icon: "\uD83D\uDCCB", label: "Copy Prompt", desc: "Copies tailoring prompt to clipboard for use in Claude chat" }
-                ].map(g => (
-                  <button key={g.key} onClick={() => setGenMode(g.key)}
-                    style={{
-                      flex: 1, padding: "12px 14px", borderRadius: 10,
-                      border: `1.5px solid ${genMode === g.key ? (g.key === "api" ? C.accent : C.purple) : C.border}`,
-                      background: genMode === g.key ? (g.key === "api" ? C.accentS : C.purpleS) : "transparent",
-                      cursor: "pointer", textAlign: "left", fontFamily: "inherit", transition: "all 0.15s"
-                    }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3 }}>
-                      <span style={{ fontSize: 16 }}>{g.icon}</span>
-                      <span style={{ fontSize: 13, fontWeight: 600, color: genMode === g.key ? C.text : C.textM }}>{g.label}</span>
-                    </div>
-                    <div style={{ fontSize: 11, color: C.textD, lineHeight: 1.4, paddingLeft: 24 }}>{g.desc}</div>
-                  </button>
-                ))}
-              </div>
-
+              {/* Page toggle + submit */}
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 16, flexWrap: "wrap", gap: 10 }}>
-                <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", fontSize: 13, userSelect: "none", color: C.textM }}>
-                  <div onClick={() => setWantCover(!wantCover)} style={{
-                    width: 18, height: 18, borderRadius: 5, border: `2px solid ${wantCover ? C.accent : C.borderH}`,
-                    background: wantCover ? C.accent : "transparent", display: "flex", alignItems: "center", justifyContent: "center",
-                    transition: "all 0.15s", cursor: "pointer", flexShrink: 0
-                  }}>
-                    {wantCover && <svg width="11" height="9" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
-                  </div>
-                  <span onClick={() => setWantCover(!wantCover)}>Also generate cover letter</span>
-                </label>
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <span style={{ fontSize: 12, color: C.textM, marginRight: 4 }}>Pages:</span>
+                  {[1, 2].map(n => (
+                    <button key={n} onClick={() => setPages(n)} style={{
+                      padding: "5px 14px", borderRadius: 7, border: `1.5px solid ${pages === n ? C.accent : C.border}`,
+                      background: pages === n ? C.accentS : "transparent",
+                      color: pages === n ? C.accent : C.textD,
+                      fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit"
+                    }}>{n}</button>
+                  ))}
+                  {pages === 2 && <span style={{ fontSize: 10.5, color: C.textD, marginLeft: 4 }}>More detail included</span>}
+                </div>
 
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   {posting.length > 0 && mode === "text" && (
                     <span style={{ fontSize: 11, color: C.textD, fontFamily: "'JetBrains Mono',monospace" }}>{posting.split(/\s+/).filter(Boolean).length}w</span>
                   )}
-                  <button onClick={handleGo} disabled={!canGo || loading}
+                  <button onClick={handleTailor} disabled={!canGo || loading}
                     style={{
                       padding: "10px 28px", borderRadius: 10, border: "none",
-                      background: !canGo ? C.border : genMode === "api" ? `linear-gradient(135deg,${C.accent},${C.accentD})` : `linear-gradient(135deg,${C.purple},#6D28D9)`,
+                      background: !canGo ? C.border : `linear-gradient(135deg,${C.accent},${C.accentD})`,
                       color: !canGo ? C.textD : "#fff",
                       fontSize: 13, fontWeight: 600, cursor: !canGo ? "not-allowed" : "pointer",
                       fontFamily: "inherit", minWidth: 150,
-                      boxShadow: canGo && !loading ? `0 2px 12px ${genMode === "api" ? "rgba(59,130,246,0.25)" : "rgba(139,92,246,0.25)"}` : "none"
+                      boxShadow: canGo && !loading ? "0 2px 12px rgba(59,130,246,0.25)" : "none"
                     }}>
-                    {loading ? <span style={{ display: "flex", alignItems: "center", gap: 8 }}><span className="rf-spin"/>{prog}</span>
-                      : genMode === "api" ? (wantCover ? "Generate Both" : "Tailor Resume") : "Copy Prompt"}
+                    {loading ? <span style={{ display: "flex", alignItems: "center", gap: 8 }}><span className="rf-spin"/>{prog}</span> : "Tailor Resume"}
                   </button>
                 </div>
               </div>
@@ -347,13 +327,29 @@ export default function App() {
           </div>
         )}
 
-        {/* SENT confirmation */}
-        {sent && status !== "done" && (
-          <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 14, padding: "32px 28px", textAlign: "center" }}>
-            <div style={{ fontSize: 40, marginBottom: 12 }}>✅</div>
-            <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 6 }}>Prompt Copied to Clipboard</div>
-            <div style={{ fontSize: 13, color: C.textM, lineHeight: 1.6, maxWidth: 500, margin: "0 auto" }}>
-              Paste it into a Claude chat to generate your tailored .docx resume{wantCover ? " and cover letter" : ""}. Click "+ New" to tailor another.
+        {/* TIPS & INSPIRATION — shown when idle */}
+        {status === "idle" && (
+          <div style={{ marginTop: 18, background: C.surface, border: `1px solid ${C.border}`, borderRadius: 12, padding: "18px 22px", position: "relative", overflow: "hidden", minHeight: 80 }}>
+            <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
+              <div style={{ fontSize: 28, flexShrink: 0, lineHeight: 1 }}>{tip.icon}</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: "0.06em", marginBottom: 4, textTransform: "uppercase" }}>{tip.cat}</div>
+                <div style={{ fontSize: 13.5, color: C.text, lineHeight: 1.6 }}>{tip.tip}</div>
+              </div>
+              <button onClick={() => setTipIdx((tipIdx + 1) % TIPS.length)}
+                style={{ flexShrink: 0, padding: "6px 12px", borderRadius: 7, border: `1px solid ${C.border}`, background: "transparent", color: C.textD, fontSize: 11, fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}>
+                Next tip \u2192
+              </button>
+            </div>
+            {/* Progress dots */}
+            <div style={{ display: "flex", gap: 4, marginTop: 12, justifyContent: "center" }}>
+              {TIPS.map((_, i) => (
+                <div key={i} onClick={() => setTipIdx(i)} style={{
+                  width: i === tipIdx ? 18 : 5, height: 5, borderRadius: 3,
+                  background: i === tipIdx ? C.accent : C.border,
+                  transition: "all 0.3s", cursor: "pointer"
+                }}/>
+              ))}
             </div>
           </div>
         )}
@@ -373,13 +369,38 @@ export default function App() {
               </div>
               <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
                 <span style={{ fontSize: 12, color: C.success, fontWeight: 600, marginRight: 4 }}>
-                  ✓ {tab === "resume" ? res.target_title : cov?.company_name}
+                  \u2713 {tab === "resume" ? res.target_title : (cov?.company_name || "")}
                 </span>
                 <button onClick={() => doCopy(tab === "resume" ? rRef : cRef)} style={bSm(false)}>{copied ? "Copied!" : "Copy"}</button>
-                <button onClick={() => doPrint(tab === "resume" ? rRef : cRef, tab === "resume" ? "Resume" : "Cover Letter")} style={bSm(false)}>Print / PDF</button>
+                <button onClick={() => doDownload(tab === "resume" ? rRef : cRef, tab === "resume" ? `Resume_${res.filename_suffix}` : `CoverLetter_${cov?.company_name || ""}`)} style={{
+                  ...bSm(false), background: "linear-gradient(135deg,#10B981,#059669)", border: "none"
+                }}>
+                  \u2B07 Download PDF
+                </button>
               </div>
             </div>
 
+            {/* Generate Cover Letter */}
+            {tab === "resume" && !cov && (
+              <div style={{ marginBottom: 16 }}>
+                <button onClick={handleCoverLetter} disabled={covLoading}
+                  style={{
+                    width: "100%", padding: "14px 24px", borderRadius: 10,
+                    border: `1.5px solid ${C.emerald}`, background: C.emeraldS,
+                    color: C.emerald, fontSize: 14, fontWeight: 600,
+                    cursor: covLoading ? "wait" : "pointer", fontFamily: "inherit",
+                    display: "flex", alignItems: "center", justifyContent: "center", gap: 10
+                  }}>
+                  {covLoading ? <><span className="rf-spin-green"/>Writing tailored cover letter...</> : <>\u270D\uFE0F Generate Cover Letter for {res.target_title}</>}
+                </button>
+              </div>
+            )}
+
+            {err && status === "done" && (
+              <div style={{ marginBottom: 14, padding: "11px 16px", borderRadius: 10, background: C.errorS, border: "1px solid rgba(239,68,68,0.15)", color: C.error, fontSize: 12.5 }}>{err}</div>
+            )}
+
+            {/* RESUME */}
             {tab === "resume" && (
               <div ref={rRef} style={paper}>
                 <div style={{ textAlign: "center", marginBottom: 3 }}>
@@ -424,6 +445,7 @@ export default function App() {
               </div>
             )}
 
+            {/* COVER LETTER */}
             {tab === "cover" && cov && (
               <div ref={cRef} style={paper}>
                 <div style={{ marginBottom: 18 }}>
@@ -431,46 +453,17 @@ export default function App() {
                   <div style={{ fontSize: 11.5, color: "#777" }}>{MD.location} | {MD.email} | {MD.phone}</div>
                 </div>
                 <div style={{ fontSize: 11.5, color: "#777", marginBottom: 18 }}>{cov.date}</div>
-                <div style={{ fontSize: 11.5, color: "#333", marginBottom: 8, fontWeight: 600 }}>{cov.salutation}</div>
-                {cov.body.split("\n\n").map((p,i) => <p key={i} style={{ fontSize: 11.5, color: "#333", lineHeight: 1.7, marginBottom: 12 }}>{p}</p>)}
-                <div style={{ fontSize: 11.5, color: "#333", marginTop: 20 }}>
+                <div style={{ fontSize: 11.5, color: "#333", marginBottom: 10, fontWeight: 600 }}>{cov.salutation}</div>
+                {cov.body.split("\n\n").map((p,i) => <p key={i} style={{ fontSize: 11.5, color: "#333", lineHeight: 1.75, marginBottom: 14 }}>{p}</p>)}
+                <div style={{ fontSize: 11.5, color: "#333", marginTop: 24 }}>
                   <div>{cov.closing}</div>
-                  <div style={{ fontWeight: 600, marginTop: 5 }}>{MD.name}</div>
+                  <div style={{ fontWeight: 600, marginTop: 6 }}>{MD.name}</div>
                 </div>
               </div>
             )}
-            <div style={{ textAlign: "center", marginTop: 14, fontSize: 11, color: C.textD }}>Use "Print / PDF" to save as PDF</div>
-          </div>
-        )}
 
-        {/* HOW IT WORKS */}
-        {status === "idle" && !sent && (
-          <div style={{ marginTop: 16 }}>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 10 }}>
-              {[
-                { icon: "📋", t: "Input", d: "Paste text or job URL" },
-                { icon: "🎯", t: "Instruct", d: "Add custom emphasis" },
-                { icon: "🧠", t: "AI Tailors", d: "Skills & bullets matched" },
-                { icon: "📄", t: "Export", d: "Resume + cover as PDF" }
-              ].map((s,i) => (
-                <div key={i} style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 11, padding: "16px 12px", textAlign: "center" }}>
-                  <div style={{ fontSize: 22, marginBottom: 5 }}>{s.icon}</div>
-                  <div style={{ fontSize: 12, fontWeight: 600, marginBottom: 3 }}>{s.t}</div>
-                  <div style={{ fontSize: 10.5, color: C.textD, lineHeight: 1.4 }}>{s.d}</div>
-                </div>
-              ))}
-            </div>
-            <div style={{ marginTop: 14, background: C.surface, border: `1px solid ${C.border}`, borderRadius: 11, padding: "14px 20px" }}>
-              <div style={{ fontSize: 12, fontWeight: 600, marginBottom: 8, color: C.textM }}>Try a sample:</div>
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                {samples.map((s,i) => (
-                  <button key={i} onClick={() => { setPosting(s.text); setMode("text"); }}
-                    style={{ padding: "7px 14px", borderRadius: 8, fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: "inherit", border: `1px solid ${C.borderH}`, background: C.surfaceR, color: C.textM, transition: "all 0.15s" }}
-                    onMouseEnter={e => { e.target.style.borderColor = C.accent; e.target.style.color = C.accent; }}
-                    onMouseLeave={e => { e.target.style.borderColor = C.borderH; e.target.style.color = C.textM; }}
-                  >{s.label}</button>
-                ))}
-              </div>
+            <div style={{ textAlign: "center", marginTop: 14, fontSize: 11, color: C.textD }}>
+              "Download PDF" opens your browser's save dialog \u2014 select "Save as PDF" as the destination
             </div>
           </div>
         )}
@@ -479,18 +472,13 @@ export default function App() {
       <style>{`
         @keyframes rfspin{to{transform:rotate(360deg)}}
         .rf-spin{width:13px;height:13px;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:rfspin .7s linear infinite;display:inline-block}
+        .rf-spin-green{width:14px;height:14px;border:2px solid rgba(16,185,129,.25);border-top-color:#10B981;border-radius:50%;animation:rfspin .7s linear infinite;display:inline-block}
         textarea::placeholder,input::placeholder{color:#4B5563}
         *{box-sizing:border-box}
       `}</style>
     </div>
   );
 }
-
-const samples = [
-  { label: "Data Analyst \u2014 RBC", text: "Data Analyst, Royal Bank of Canada, Vancouver BC.\n\nResponsibilities: Analyze large datasets using SQL and Python. Build dashboards in Tableau and Power BI. Collaborate with stakeholders to translate data into insights. Support predictive modeling.\n\nQualifications: Bachelor's or Master's in Statistics, CS, Data Science. SQL, Python, BI tools. Statistical analysis and visualization. Communication skills.\n\nNice to have: Cloud (AWS, GCP). ML knowledge. Financial services experience." },
-  { label: "ML Engineer \u2014 Amazon", text: "Machine Learning Engineer, Amazon, Vancouver BC.\n\nResponsibilities: Design and implement ML models for production. Build ML pipelines with Python and cloud. Deploy models at scale with Docker and CI/CD.\n\nQualifications: MS in CS/Data Science. Python, PyTorch/TensorFlow. Docker, AWS. Deep learning and NLP. Production deployment.\n\nNice to have: Computer vision. A/B testing. Open source contributions." },
-  { label: "Data Scientist \u2014 Shopify", text: "Data Scientist, Shopify, Remote Canada.\n\nResponsibilities: Build predictive models. Design A/B tests. Create dashboards. Work with large-scale pipelines.\n\nQualifications: Master's quantitative field. Python, R, SQL. ML (regression, classification, clustering). Visualization and communication. A/B testing.\n\nNice to have: NLP. Spark/big data. E-commerce domain." }
-];
 
 function SH({ t }) { return <div style={{ fontSize: 12, fontWeight: 700, color: "#1E3A5F", letterSpacing: "0.06em", borderBottom: "1.5px solid #1E3A5F", paddingBottom: 2, marginTop: 10, marginBottom: 4 }}>{t}</div>; }
 
