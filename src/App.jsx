@@ -16,12 +16,26 @@ const MD = {
         { id: "churn", text: "Engineered churn prediction models using Random Forest, Logistic Regression, and GLMs in Python (scikit-learn), reducing client risk exposure by 12% and informing retention strategies across 3 retail accounts." },
         { id: "dashboards", text: "Developed 8+ automated Power BI and Tableau dashboards for revenue forecasting and KPI tracking, improving retail planning accuracy and eliminating 25% of manual reporting effort (~10 hours/week)." },
         { id: "sql", text: "Optimized SQL-based ETL pipelines for data extraction, transformation, and analysis across datasets of 500K+ records, accelerating reporting turnaround by 40% and enabling real-time stakeholder access." },
-        { id: "scaleai", text: "Evaluated 500+ AI-generated responses at Scale AI (Balba project) for accuracy, tone, and completeness, supporting reinforcement learning from human feedback (RLHF) workflows for production NLP/LLM models." },
         { id: "vba", text: "Automated Excel reporting workflows with VBA macros across 5 client accounts, reducing manual data entry effort by 25% and improving data integrity for monthly financial reports." },
         { id: "timeseries", text: "Built R-based time-series forecasting models (ARIMA, seasonal decomposition) for demand prediction, improving financial forecasting accuracy by 18% for retail clients." },
-        { id: "presentations", text: "Delivered 15+ analytical presentations and executive summaries translating complex statistical findings into actionable business recommendations for non-technical stakeholders." },
-        { id: "writing", text: "Produced 30+ technical and business content pieces across AI, analytics, SaaS, blockchain, and nonprofit sectors for clients on Upwork, combining research ability with clear stakeholder-focused communication." },
-        { id: "aitrainer", text: "Assessed chatbot response quality across 500+ evaluations at Scale AI, scoring accuracy, helpfulness, and safety to train production-grade language models via RLHF pipelines." }
+        { id: "presentations", text: "Delivered 15+ analytical presentations and executive summaries translating complex statistical findings into actionable business recommendations for non-technical stakeholders." }
+      ]
+    },
+    { id: "jkl", title: "Data Analyst", company: "Jonathan Kings Limited, Nigeria", dates: "Jan 2021 \u2013 Dec 2023",
+      bullets: [
+        { id: "jkl_dashboards", text: "Designed and maintained 10+ Power BI and Tableau dashboards tracking sales revenue, inventory turnover, and supply chain KPIs, enabling data-driven procurement decisions that reduced stockout incidents by 20%." },
+        { id: "jkl_reporting", text: "Built automated Excel and Google Sheets reporting systems for financial performance (P&L, budgets, cash flow), reducing month-end reporting time from 5 days to 2 days and improving accuracy." },
+        { id: "jkl_python", text: "Developed Python (pandas, matplotlib) scripts to analyze 50K+ transaction records across retail and logistics operations, identifying $30K+ in cost-saving opportunities through procurement pattern analysis." },
+        { id: "jkl_crm", text: "Analyzed customer purchase data and segmentation patterns to inform marketing campaigns, contributing to a 15% increase in repeat customer retention across 3 product lines." },
+        { id: "jkl_supply", text: "Tracked and visualized end-to-end supply chain metrics (shipping times, vendor performance, freight costs) for international trade operations, improving vendor evaluation accuracy and reducing delivery delays by 18%." },
+        { id: "jkl_stakeholder", text: "Presented weekly analytics reports and quarterly business reviews directly to the company director, translating complex data insights into strategic recommendations for inventory planning and market expansion." }
+      ]
+    },
+    { id: "writer", title: "Freelance Technical Writer", company: "Upwork \u2014 Remote", dates: "2022 \u2013 Present",
+      bullets: [
+        { id: "wr_castlore", text: "Authored 5 strategy articles connecting classic card game mechanics to board game design for client Michael Long (Castlore), delivering SEO-optimized content on deadline." },
+        { id: "wr_saas", text: "Produced 30+ technical and business content pieces across AI, data analytics, SaaS process optimization, blockchain/NFT, and nonprofit fundraising verticals." },
+        { id: "wr_research", text: "Researched and synthesized complex technical topics into clear, audience-appropriate copy for blogs, case studies, lead magnets, YouTube scripts, and website content." }
       ]
     },
     { id: "huawei", title: "Field Engineering Intern", company: "Huawei Technologies, Nigeria", dates: "May 2019 \u2013 Aug 2019",
@@ -160,13 +174,16 @@ CANADIAN MARKET SPECIFICS:
 ${pr}
 
 SELECTION RULES:
-- include_scaleai: true ONLY if posting mentions NLP, LLM, AI, language models, generative AI, or RLHF
 - include_airtel: true ONLY if posting values telecom, engineering, monitoring, KPIs, or emphasizes Canadian work experience
+- include_writer: true ONLY if posting mentions technical writing, content creation, communication, documentation, or copywriting
+- ALWAYS include freelance and jkl (Jonathan Kings Limited) — they are core experience
+- ALWAYS include huawei — it shows engineering background
+- For jkl: select 3-4 best bullets matching the posting from: jkl_dashboards, jkl_reporting, jkl_python, jkl_crm, jkl_supply, jkl_stakeholder
 - Rewrite bullet text to echo the posting's exact terminology and keywords while keeping metrics accurate
 - Order projects by relevance to the posting, not by date
 
 RESPOND WITH ONLY VALID JSON (no markdown, no explanation):
-{"overview":"string","target_title":"string","skills":[{"label":"string","items":"string"}],"include_scaleai":boolean,"include_airtel":boolean,"freelance_bullets":["bullet_id"],"huawei_bullets":["bullet_id"],"airtel_bullets":["bullet_id"],"projects":["project_id"],"filename_suffix":"string"}`;
+{"overview":"string","target_title":"string","skills":[{"label":"string","items":"string"}],"include_airtel":boolean,"include_writer":boolean,"freelance_bullets":["bullet_id"],"jkl_bullets":["bullet_id"],"huawei_bullets":["bullet_id"],"airtel_bullets":["bullet_id"],"writer_bullets":["bullet_id"],"projects":["project_id"],"filename_suffix":"string"}`;
 }
 
 // Research-backed cover letter system prompt (2026 best practices)
@@ -653,6 +670,8 @@ Respond ONLY valid JSON array, no markdown:
                 ))}
                 <SH t="PROFESSIONAL EXPERIENCE"/>
                 <EB exp={getExp("freelance")} bul={getBul("freelance", res.freelance_bullets||[])}/>
+                <EB exp={getExp("jkl")} bul={getBul("jkl", res.jkl_bullets||[])}/>
+                {res.include_writer && <EB exp={getExp("writer")} bul={getBul("writer", res.writer_bullets||[])}/>}
                 <EB exp={getExp("huawei")} bul={getBul("huawei", res.huawei_bullets||[])}/>
                 {res.include_airtel && <EB exp={getExp("airtel")} bul={getBul("airtel", res.airtel_bullets||[])}/>}
                 <SH t="PROJECTS"/>
