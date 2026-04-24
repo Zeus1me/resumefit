@@ -64,9 +64,9 @@ const MD = {
     { id: "lidar", title: "LiDAR Point Cloud Smart Stitching \u2014 Capstone with Lumotive Inc.", dates: "Jan 2026 \u2013 Present", text: "Developing rain-scatter filtering algorithms for MD42 LiDAR sensor data across three echo return streams using Python and ROS2, improving 3D point cloud accuracy for autonomous systems. Running parallel workflows on M4 Mac (native Python with rosbags/pyntcloud) and UTM x86 Ubuntu VM (ROS2/RViz2).", tags: ["python","computer_vision","engineering","ros2","3d","autonomous"] },
     // --- FULL-STACK / PRODUCT ---
     { id: "jobforge", title: "JobForge \u2014 AI-Powered Job Search Application", dates: "Apr 2026", text: "Built a full-featured React job search app with AI-powered job matching, skill gap analysis, Kanban tracker, cover letter generation, and a three-tier search system using curated local database, Remotive API, and Claude-generated listings.", tags: ["react","javascript","fullstack","ai","product"] },
-    { id: "resumefit", title: "ResumeFit \u2014 AI Resume Tailoring Web App", dates: "Apr 2026", text: "Built and deployed a Vite+React web app on Netlify with serverless Claude API integration that tailors resumes, generates cover letters, and answers application questions based on job postings. Features URL scraping, 1/2-page toggle, and PDF export.", tags: ["react","javascript","fullstack","ai","product","deployment"] },
+    { id: "resumefit", title: "ResumeFit \u2014 AI Resume Tailoring Web App", dates: "Apr 2026", text: "Built and deployed a Vite+React web app on Netlify with serverless Claude API integration that tailors resumes, generates cover letters, and answers application questions based on job postings. Features URL scraping, 1/2-page toggle, and PDF export.", url: "lazyzeus.netlify.app", tags: ["react","javascript","fullstack","ai","product","deployment"] },
     // --- DEEP LEARNING / COMPUTER VISION ---
-    { id: "fruitnet", title: "FruitNet \u2014 Object Detection Microservice", dates: "Mar 2026", text: "Built and deployed a Faster R-CNN fruit detection API (FastAPI + Docker) on Hugging Face Spaces; fine-tuned on 4,485 images across 11 fruit classes with custom label correction mapping and bounding box detection.", tags: ["ml","deep_learning","computer_vision","docker","api","deployment","pytorch"] },
+    { id: "fruitnet", title: "FruitNet \u2014 Object Detection Microservice", dates: "Mar 2026", text: "Built and deployed a Faster R-CNN fruit detection API (FastAPI + Docker) on Hugging Face Spaces; fine-tuned on 4,485 images across 11 fruit classes with custom label correction mapping and bounding box detection.", url: "zeus1m-fruit-detector-api.hf.space", tags: ["ml","deep_learning","computer_vision","docker","api","deployment","pytorch"] },
     { id: "fruitvision", title: "Fruit Vision Classifier \u2014 Google Cloud Vision API", dates: "Mar 2026", text: "Evaluated Cloud Vision API for fruit classification; improved accuracy from 19.5% to 52.5% using custom synonym dictionaries and increased maxResults. Deployed on Hugging Face.", tags: ["cloud","computer_vision","api","google_cloud"] },
     { id: "intelcv", title: "Intel Image Classification \u2014 ResNet-18 Transfer Learning", dates: "Mar 2026", text: "Applied transfer learning with ResNet-18 on Intel Image Classification dataset (6 classes). Compared overfitting baseline, regularized model (macro F1 0.9353), and from-scratch baseline (macro F1 0.8453) using PyTorch.", tags: ["deep_learning","computer_vision","pytorch","transfer_learning"] },
     // --- NLP ---
@@ -721,7 +721,7 @@ Respond ONLY valid JSON array, no markdown:
                   {MD.location} {" | "} {MD.email} {" | "} {MD.phone}
                 </div>
                 <div style={{ textAlign: "center", fontSize: 11, color: "#777", marginBottom: 2 }}>
-                  {MD.linkedin} {" | "} {MD.github} {" | "} {MD.portfolio}
+                  {MD.linkedin} {" | "} {MD.github}
                 </div>
                 <div style={{ textAlign: "center", fontSize: 10, color: "#555", fontStyle: "italic", marginBottom: 12 }}>
                   {"Authorized to work in Canada (PGWP eligible)"}
@@ -786,7 +786,7 @@ Respond ONLY valid JSON array, no markdown:
                   const p = getProj(pid); if (!p) return null;
                   return (<div key={pid} style={{ marginBottom: 5 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11.5 }}>
-                      <span style={{ fontWeight: 600 }}>{p.title}</span>
+                      <span style={{ fontWeight: 600 }}>{p.title}{p.url && <span style={{ fontWeight: 400, color: "#3B82F6", fontSize: 10 }}>{" | " + p.url}</span>}</span>
                       <span style={{ color: "#777", flexShrink: 0, marginLeft: 10 }}>{p.dates}</span>
                     </div>
                     <div style={{ fontSize: 11, color: "#333", marginTop: 1, paddingLeft: 10 }}>{"• " + p.text}</div>
