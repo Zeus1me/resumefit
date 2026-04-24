@@ -7,6 +7,12 @@ const MD = {
   phone: "+1 (236) 660-8515",
   linkedin: "linkedin.com/in/josephiyanu",
   github: "github.com/Zeus1me",
+  certifications: [
+    { id: "ai_practice", name: "AI in Professional Practice", issuer: "Northeastern University", date: "Jun 2025", tags: ["ai", "ml", "data_science"] },
+    { id: "fin_accounting", name: "Financial Accounting", issuer: "University Canada West", date: "Jun 2024", tags: ["finance", "accounting", "banking", "analyst"] },
+    { id: "semrush_seo", name: "Semrush SEO Toolkit Exam", issuer: "Semrush", date: "Aug 2022", tags: ["marketing", "seo", "digital_marketing", "content"] },
+    { id: "linkedin_writing", name: "Writing Articles", issuer: "LinkedIn", date: "May 2022", tags: ["writing", "content", "communication", "technical_writing"] }
+  ],
   education: [
     { degree: "Master of Science in Data Analytics", school: "Northeastern University, Vancouver, BC", dates: "Sep 2024 \u2013 Jun 2026", gpa: "3.8 / 4.0", coursework: "Machine Learning, Deep Learning, NLP, Predictive Analytics, Data Mining, Cloud Computing, AI Ethics, Cybersecurity, Analytics Leadership, Optimization, Business Intelligence" },
     { degree: "Bachelor of Engineering, Electrical & Electronic Engineering", school: "Obafemi Awolowo University, Nigeria", dates: "2015 \u2013 2020", gpa: null, coursework: "Network Systems, Optimization, Applied Problem-Solving, Quantitative Methods, Signal Processing" }
@@ -177,6 +183,7 @@ ${pr}
 SELECTION RULES:
 - include_airtel: true ONLY if posting values telecom, engineering, monitoring, KPIs, or emphasizes Canadian work experience
 - include_writer: true ONLY if posting mentions technical writing, content creation, communication, documentation, or copywriting
+- certifications: select 1-3 most relevant from: ai_practice (AI/ML/data science roles), fin_accounting (finance/banking/analyst roles), semrush_seo (marketing/SEO/digital roles), linkedin_writing (writing/content roles). Always include ai_practice for any tech/data role.
 - ALWAYS include freelance and jkl (Jonathan Kings Limited) — they are core experience
 - ALWAYS include huawei — it shows engineering background
 - For jkl: select 3-4 best bullets matching the posting from: jkl_dashboards, jkl_reporting, jkl_python, jkl_crm, jkl_supply, jkl_stakeholder
@@ -184,7 +191,7 @@ SELECTION RULES:
 - Order projects by relevance to the posting, not by date
 
 RESPOND WITH ONLY VALID JSON (no markdown, no explanation):
-{"overview":"string","target_title":"string","skills":[{"label":"string","items":"string"}],"include_airtel":boolean,"include_writer":boolean,"freelance_bullets":["bullet_id"],"jkl_bullets":["bullet_id"],"huawei_bullets":["bullet_id"],"airtel_bullets":["bullet_id"],"writer_bullets":["bullet_id"],"projects":["project_id"],"filename_suffix":"string"}`;
+{"overview":"string","target_title":"string","skills":[{"label":"string","items":"string"}],"include_airtel":boolean,"include_writer":boolean,"certifications":["cert_id"],"freelance_bullets":["bullet_id"],"jkl_bullets":["bullet_id"],"huawei_bullets":["bullet_id"],"airtel_bullets":["bullet_id"],"writer_bullets":["bullet_id"],"projects":["project_id"],"filename_suffix":"string"}`;
 }
 
 // Research-backed cover letter system prompt (2026 best practices)
@@ -681,6 +688,18 @@ Respond ONLY valid JSON array, no markdown:
                     {i === 0 && <div style={{ fontSize: 10, color: "#666", marginTop: 1 }}>Coursework: {ed.coursework}</div>}
                   </div>
                 ))}
+                {res.certifications && res.certifications.length > 0 && (
+                  <>
+                    <SH t="CERTIFICATIONS"/>
+                    <div style={{ fontSize: 11.5, color: "#333", margin: "4px 0 8px" }}>
+                      {res.certifications.map(cid => {
+                        const cert = MD.certifications.find(c => c.id === cid);
+                        if (!cert) return null;
+                        return <div key={cid} style={{ marginBottom: 2 }}><span style={{ fontWeight: 600 }}>{cert.name}</span><span style={{ color: "#777" }}>{" \u2014 " + cert.issuer + " (" + cert.date + ")"}</span></div>;
+                      })}
+                    </div>
+                  </>
+                )}
                 <SH t="PROFESSIONAL EXPERIENCE"/>
                 <EB exp={getExp("freelance")} bul={getBul("freelance", res.freelance_bullets||[])}/>
                 <EB exp={getExp("jkl")} bul={getBul("jkl", res.jkl_bullets||[])}/>
