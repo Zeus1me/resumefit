@@ -131,7 +131,7 @@ const TIPS = [
 
 function makeResumeSys(pages) {
   const pr = pages === 1
-    ? "CRITICAL: ONE PAGE ONLY. Select ONLY the most relevant 3-4 bullets per role and 3-4 projects. Every word must earn its place."
+    ? "CRITICAL ONE-PAGE MODE: Select ONLY 3 bullets per experience role (freelance, jkl, huawei). Select ONLY 3 projects. Keep overview to exactly 3 sentences. Every word must earn its place. If in doubt, cut it."
     : "TWO PAGES: Include 4-5 bullets per role, 5-6 projects, expanded 3-4 sentence overview. Still be selective.";
 
   return `You are an elite ATS-optimized resume tailoring engine for the Canadian tech job market (2026). Your output must pass Workday, Taleo, Lever, and Greenhouse ATS parsers AND impress a human recruiter in their 6-second scan.
@@ -711,66 +711,58 @@ Respond ONLY valid JSON array, no markdown:
             )}
 
             {/* RESUME */}
+            {/* RESUME */}
             {tab === "resume" && (
               <div ref={rRef} style={paper}>
-                {/* HEADER */}
-                <div style={{ textAlign: "center", marginBottom: 3 }}>
-                  <div style={{ fontSize: 21, fontWeight: 700, color: "#1E3A5F", letterSpacing: "0.05em" }}>{MD.name.toUpperCase()}</div>
+                <div style={{ textAlign: "center", marginBottom: 2 }}>
+                  <div style={{ fontSize: 20, fontWeight: 700, color: "#1E3A5F", letterSpacing: "0.05em" }}>{MD.name.toUpperCase()}</div>
                 </div>
-                <div style={{ textAlign: "center", fontSize: 11, color: "#777", marginBottom: 2 }}>
+                <div style={{ textAlign: "center", fontSize: 10.5, color: "#777", marginBottom: 1 }}>
                   {MD.location} {" | "} {MD.email} {" | "} {MD.phone}
                 </div>
-                <div style={{ textAlign: "center", fontSize: 11, color: "#777", marginBottom: 2 }}>
-                  {MD.linkedin} {" | "} {MD.github}
+                <div style={{ textAlign: "center", fontSize: 10.5, marginBottom: 1 }}>
+                  <a href={"https://www." + MD.linkedin} style={{ color: "#3B82F6", textDecoration: "none" }}>{MD.linkedin}</a>
+                  {" | "}
+                  <a href={"https://" + MD.github} style={{ color: "#3B82F6", textDecoration: "none" }}>{MD.github}</a>
                 </div>
-                <div style={{ textAlign: "center", fontSize: 10, color: "#555", fontStyle: "italic", marginBottom: 12 }}>
+                <div style={{ textAlign: "center", fontSize: 9.5, color: "#555", fontStyle: "italic", marginBottom: 8 }}>
                   {"Authorized to work in Canada (PGWP eligible)"}
                 </div>
-
-                {/* PROFESSIONAL SUMMARY */}
                 <SH t="PROFESSIONAL SUMMARY"/>
-                <p style={{ fontSize: 11.5, color: "#333", margin: "5px 0 4px", lineHeight: 1.65 }}>{res.overview}</p>
-
-                {/* KEY HIGHLIGHTS */}
+                <p style={{ fontSize: 10.5, color: "#333", margin: "3px 0 2px", lineHeight: 1.5 }}>{res.overview}</p>
                 {res.key_highlights && res.key_highlights.length > 0 && (
-                  <div style={{ margin: "4px 0 8px", paddingLeft: 10 }}>
+                  <div style={{ margin: "2px 0 4px", paddingLeft: 10 }}>
                     {res.key_highlights.map((h, i) => (
-                      <div key={i} style={{ fontSize: 11, color: "#333", lineHeight: 1.5, marginBottom: 1 }}>{"• " + h}</div>
+                      <div key={i} style={{ fontSize: 10, color: "#333", lineHeight: 1.4 }}>{"• " + h}</div>
                     ))}
                   </div>
                 )}
-
-                {/* TECHNICAL SKILLS (with proficiency levels) */}
                 <SH t="TECHNICAL SKILLS"/>
-                <div style={{ margin: "5px 0 8px" }}>
-                  {res.skills?.map((s,i) => <div key={i} style={{ fontSize: 11.5, marginBottom: 2 }}><span style={{ fontWeight: 600 }}>{s.label}: </span><span style={{ color: "#333" }}>{s.items}</span></div>)}
+                <div style={{ margin: "3px 0 4px" }}>
+                  {res.skills?.map((s,i) => <div key={i} style={{ fontSize: 10.5, marginBottom: 1 }}><span style={{ fontWeight: 600 }}>{s.label}: </span><span style={{ color: "#333" }}>{s.items}</span></div>)}
                 </div>
-
-                {/* EDUCATION (before Experience for current students) */}
                 <SH t="EDUCATION"/>
                 {MD.education.map((ed,i) => (
-                  <div key={i} style={{ marginBottom: 5 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11.5 }}>
+                  <div key={i} style={{ marginBottom: 3 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10.5 }}>
                       <span style={{ fontWeight: 600 }}>{ed.degree}</span><span style={{ color: "#777" }}>{ed.dates}</span>
                     </div>
-                    <div style={{ fontSize: 11, color: "#777", fontStyle: "italic", display: "flex", justifyContent: "space-between" }}>
+                    <div style={{ fontSize: 10, color: "#777", fontStyle: "italic", display: "flex", justifyContent: "space-between" }}>
                       <span>{ed.school}</span>{ed.gpa && <span>GPA: {ed.gpa}</span>}
                     </div>
                     {i === 0 && res.coursework && (
-                      <div style={{ fontSize: 10, color: "#666", marginTop: 1 }}>{"Relevant Coursework: " + res.coursework.join(", ")}</div>
+                      <div style={{ fontSize: 9.5, color: "#666", marginTop: 1 }}>{"Relevant Coursework: " + res.coursework.join(", ")}</div>
                     )}
                   </div>
                 ))}
-
-                {/* CERTIFICATIONS */}
                 {res.certifications && res.certifications.length > 0 && (
                   <>
                     <SH t="CERTIFICATIONS"/>
-                    <div style={{ fontSize: 11.5, color: "#333", margin: "4px 0 8px" }}>
+                    <div style={{ fontSize: 10.5, color: "#333", margin: "2px 0 4px" }}>
                       {res.certifications.map(cid => {
                         const cert = MD.certifications.find(c => c.id === cid);
                         if (!cert) return null;
-                        return <div key={cid} style={{ marginBottom: 2 }}><span style={{ fontWeight: 600 }}>{cert.name}</span><span style={{ color: "#777" }}>{" \u2014 " + cert.issuer + " (" + cert.date + ")"}</span></div>;
+                        return <div key={cid} style={{ marginBottom: 1 }}><span style={{ fontWeight: 600 }}>{cert.name}</span><span style={{ color: "#777" }}>{" — " + cert.issuer + " (" + cert.date + ")"}</span></div>;
                       })}
                     </div>
                   </>
@@ -784,12 +776,15 @@ Respond ONLY valid JSON array, no markdown:
                 <SH t="PROJECTS"/>
                 {(res.projects||[]).map(pid => {
                   const p = getProj(pid); if (!p) return null;
-                  return (<div key={pid} style={{ marginBottom: 5 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11.5 }}>
-                      <span style={{ fontWeight: 600 }}>{p.title}{p.url && <span style={{ fontWeight: 400, color: "#3B82F6", fontSize: 10 }}>{" | " + p.url}</span>}</span>
-                      <span style={{ color: "#777", flexShrink: 0, marginLeft: 10 }}>{p.dates}</span>
+                  return (<div key={pid} style={{ marginBottom: 3 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10.5 }}>
+                      <span>
+                        <span style={{ fontWeight: 600 }}>{p.title}</span>
+                        {p.url && <>{" | "}<a href={"https://" + p.url} style={{ color: "#3B82F6", textDecoration: "none", fontSize: 9.5 }}>{p.url}</a></>}
+                      </span>
+                      <span style={{ color: "#777", flexShrink: 0, marginLeft: 8 }}>{p.dates}</span>
                     </div>
-                    <div style={{ fontSize: 11, color: "#333", marginTop: 1, paddingLeft: 10 }}>{"• " + p.text}</div>
+                    <div style={{ fontSize: 10, color: "#333", marginTop: 1, paddingLeft: 10 }}>{"• " + p.text}</div>
                   </div>);
                 })}
               </div>
@@ -926,20 +921,20 @@ Respond ONLY valid JSON array, no markdown:
   );
 }
 
-function SH({ t }) { return <div style={{ fontSize: 12, fontWeight: 700, color: "#1E3A5F", letterSpacing: "0.06em", borderBottom: "1.5px solid #1E3A5F", paddingBottom: 2, marginTop: 10, marginBottom: 4 }}>{t}</div>; }
+function SH({ t }) { return <div style={{ fontSize: 11, fontWeight: 700, color: "#1E3A5F", letterSpacing: "0.06em", borderBottom: "1.5px solid #1E3A5F", paddingBottom: 1, marginTop: 7, marginBottom: 3 }}>{t}</div>; }
 
 function EB({ exp, bul }) {
   if (!exp) return null;
-  return (<div style={{ marginBottom: 7 }}>
-    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11.5 }}>
+  return (<div style={{ marginBottom: 5 }}>
+    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10.5 }}>
       <span><span style={{ fontWeight: 600 }}>{exp.title}</span><span style={{ color: "#777" }}>{" | " + exp.company}</span></span>
       <span style={{ color: "#777", flexShrink: 0, marginLeft: 10 }}>{exp.dates}</span>
     </div>
-    {bul.map((b,i) => <div key={i} style={{ fontSize: 11, color: "#333", marginTop: 2, paddingLeft: 10, lineHeight: 1.55 }}>{"• " + b.text}</div>)}
+    {bul.map((b,i) => <div key={i} style={{ fontSize: 10, color: "#333", marginTop: 1, paddingLeft: 10, lineHeight: 1.45 }}>{"• " + b.text}</div>)}
   </div>);
 }
 
-const paper = { background: "#fff", borderRadius: 12, padding: "36px 44px", color: "#1a1a1a", fontFamily: "'DM Sans','Segoe UI',sans-serif", lineHeight: 1.5, boxShadow: "0 4px 30px rgba(0,0,0,0.5)" };
+const paper = { background: "#fff", borderRadius: 12, padding: "28px 36px", color: "#1a1a1a", fontFamily: "'DM Sans','Segoe UI',sans-serif", lineHeight: 1.4, boxShadow: "0 4px 30px rgba(0,0,0,0.5)" };
 const taS = { width: "100%", minHeight: 150, maxHeight: 400, background: "#06080F", border: "1px solid #1C2333", borderRadius: 10, padding: "12px 14px", fontSize: 13, fontFamily: "'JetBrains Mono',monospace", color: "#E8ECF4", resize: "none", outline: "none", lineHeight: 1.6, boxSizing: "border-box" };
 const fB = e => { e.target.style.borderColor = "#3B82F6"; };
 const bB = e => { e.target.style.borderColor = "#1C2333"; };
