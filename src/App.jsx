@@ -191,12 +191,15 @@ SELECTION RULES:
 - Rewrite bullet text to echo the posting's exact terminology and keywords while keeping metrics accurate
 - Order projects by relevance to the posting, not by date
 
-OVERVIEW RULES (mandatory):
-- MUST start with the exact job title from the posting
-- MUST include "6+ years of experience" (freelance since 2019)
-- MUST include 3-5 top matching skills from the posting
-- MUST include one quantified achievement
-- Example format: "Data Analyst with 6+ years of experience in [matching skills]. [Quantified achievement]. Currently completing MS in Data Analytics (GPA 3.8) at Northeastern University."
+OVERVIEW RULES (mandatory — this is CRITICAL):
+- The overview describes the CANDIDATE, not the job. NEVER describe what the role requires. NEVER start with "This role requires" or "The candidate needs."
+- MUST be written in FIRST PERSON PERSPECTIVE about Joseph. It is HIS summary, selling HIM.
+- MUST start with: "[Exact Job Title from posting] with 6+ years of experience in [2-3 matching skill areas]."
+- SECOND sentence: strongest quantified achievement that matches the posting (e.g., "Built predictive models reducing client risk by 12% and automated dashboards eliminating 10+ hours/week of manual reporting.")
+- THIRD sentence: education + what sets him apart (e.g., "Currently completing MS in Data Analytics (GPA 3.8) at Northeastern University with hands-on experience across [1-2 posting-relevant domains].")
+- NEVER exceed 3 sentences. NEVER describe job requirements. ONLY describe the candidate.
+- BAD example: "This role requires deep quantitative analysis and financial domain expertise." 
+- GOOD example: "Data Analyst with 6+ years of experience in Python, SQL, and financial analytics. Engineered predictive models reducing client risk exposure by 12% and built 10+ automated Power BI dashboards for revenue forecasting. Currently completing MS in Data Analytics (GPA 3.8) at Northeastern University with expertise in machine learning and business intelligence."
 
 COURSEWORK SELECTION:
 - Select 6-8 most relevant courses from the candidate's coursework array that match the posting
