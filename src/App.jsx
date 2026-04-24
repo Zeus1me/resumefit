@@ -7,6 +7,7 @@ const MD = {
   phone: "+1 (236) 660-8515",
   linkedin: "linkedin.com/in/josephiyanu",
   github: "github.com/Zeus1me",
+  portfolio: "zeus1m-fruit-detector-api.hf.space",
   certifications: [
     { id: "ai_practice", name: "AI in Professional Practice", issuer: "Northeastern University", date: "Jun 2025", tags: ["ai", "ml", "data_science"] },
     { id: "fin_accounting", name: "Financial Accounting", issuer: "University Canada West", date: "Jun 2024", tags: ["finance", "accounting", "banking", "analyst"] },
@@ -14,7 +15,7 @@ const MD = {
     { id: "linkedin_writing", name: "Writing Articles", issuer: "LinkedIn", date: "May 2022", tags: ["writing", "content", "communication", "technical_writing"] }
   ],
   education: [
-    { degree: "Master of Science in Data Analytics", school: "Northeastern University, Vancouver, BC", dates: "Sep 2024 \u2013 Jun 2026", gpa: "3.8 / 4.0", coursework: "Machine Learning, Deep Learning, NLP, Predictive Analytics, Data Mining, Cloud Computing, AI Ethics, Cybersecurity, Analytics Leadership, Optimization, Business Intelligence" },
+    { degree: "Master of Science in Data Analytics", school: "Northeastern University, Vancouver, BC", dates: "Sep 2024 \u2013 Jun 2026", gpa: "3.8 / 4.0", coursework: ["Machine Learning", "Deep Learning", "Natural Language Processing", "Predictive Analytics", "Data Mining", "Cloud Computing", "AI Ethics", "Cybersecurity", "Analytics Leadership", "Optimization", "Business Intelligence", "Computer Vision", "Statistical Modeling"] },
     { degree: "Bachelor of Engineering, Electrical & Electronic Engineering", school: "Obafemi Awolowo University, Nigeria", dates: "2015 \u2013 2020", gpa: null, coursework: "Network Systems, Optimization, Applied Problem-Solving, Quantitative Methods, Signal Processing" }
   ],
   experience: [
@@ -190,8 +191,32 @@ SELECTION RULES:
 - Rewrite bullet text to echo the posting's exact terminology and keywords while keeping metrics accurate
 - Order projects by relevance to the posting, not by date
 
+OVERVIEW RULES (mandatory):
+- MUST start with the exact job title from the posting
+- MUST include "6+ years of experience" (freelance since 2019)
+- MUST include 3-5 top matching skills from the posting
+- MUST include one quantified achievement
+- Example format: "Data Analyst with 6+ years of experience in [matching skills]. [Quantified achievement]. Currently completing MS in Data Analytics (GPA 3.8) at Northeastern University."
+
+COURSEWORK SELECTION:
+- Select 6-8 most relevant courses from the candidate's coursework array that match the posting
+- Return as coursework array in JSON
+
+KEY HIGHLIGHTS:
+- Generate exactly 3 bullet-point highlights — the candidate's top quantified wins most relevant to the posting
+- Format: short, punchy, numbers-forward (e.g., "Reduced client risk 12% through ML prediction models")
+
+SKILLS PROFICIENCY:
+- For the top 3-5 most important skills, add proficiency level in parentheses: (Advanced), (Proficient), or (Intermediate)
+- Python (Advanced), SQL (Advanced), R (Proficient), Tableau (Advanced), Power BI (Advanced) are the defaults — adjust if posting emphasizes different tools
+- This helps ATS match keywords like "advanced SQL" or "proficient in Python"
+
+MATCH SCORE:
+- Count how many required skills/qualifications from the posting are matched by the candidate
+- Return as match_score (0-100) and matched_keywords (array of matched terms)
+
 RESPOND WITH ONLY VALID JSON (no markdown, no explanation):
-{"overview":"string","target_title":"string","skills":[{"label":"string","items":"string"}],"include_airtel":boolean,"include_writer":boolean,"certifications":["cert_id"],"freelance_bullets":["bullet_id"],"jkl_bullets":["bullet_id"],"huawei_bullets":["bullet_id"],"airtel_bullets":["bullet_id"],"writer_bullets":["bullet_id"],"projects":["project_id"],"filename_suffix":"string"}`;
+{"overview":"string","target_title":"string","skills":[{"label":"string","items":"string"}],"coursework":["string"],"key_highlights":["string","string","string"],"match_score":number,"matched_keywords":["string"],"include_airtel":boolean,"include_writer":boolean,"certifications":["cert_id"],"freelance_bullets":["bullet_id"],"jkl_bullets":["bullet_id"],"huawei_bullets":["bullet_id"],"airtel_bullets":["bullet_id"],"writer_bullets":["bullet_id"],"projects":["project_id"],"filename_suffix":"string"}`;
 }
 
 // Research-backed cover letter system prompt (2026 best practices)
@@ -635,6 +660,33 @@ Respond ONLY valid JSON array, no markdown:
               </div>
             </div>
 
+            {/* MATCH SCORE BADGE */}
+            {tab === "resume" && res.match_score && (
+              <div style={{ marginBottom: 16, background: C.surface, border: `1px solid ${C.border}`, borderRadius: 10, padding: "12px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{
+                    width: 44, height: 44, borderRadius: "50%",
+                    background: `conic-gradient(${res.match_score >= 80 ? C.success : res.match_score >= 60 ? "#F59E0B" : C.error} ${res.match_score * 3.6}deg, ${C.border} 0deg)`,
+                    display: "flex", alignItems: "center", justifyContent: "center"
+                  }}>
+                    <div style={{ width: 36, height: 36, borderRadius: "50%", background: C.surface, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, color: res.match_score >= 80 ? C.success : res.match_score >= 60 ? "#F59E0B" : C.error }}>
+                      {res.match_score}%
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 600 }}>ATS Match Score</div>
+                    <div style={{ fontSize: 11, color: C.textD }}>{res.matched_keywords?.length || 0} keywords matched</div>
+                  </div>
+                </div>
+                <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+                  {(res.matched_keywords || []).slice(0, 8).map((kw, i) => (
+                    <span key={i} style={{ fontSize: 10, padding: "2px 8px", borderRadius: 4, background: "rgba(16,185,129,0.1)", color: C.success, border: "1px solid rgba(16,185,129,0.2)" }}>{kw}</span>
+                  ))}
+                  {(res.matched_keywords || []).length > 8 && <span style={{ fontSize: 10, color: C.textD }}>+{res.matched_keywords.length - 8} more</span>}
+                </div>
+              </div>
+            )}
+
             {/* Generate Cover Letter button (after resume, if not already generated) */}
             {tab === "resume" && !cov && (
               <div style={{ marginBottom: 16 }}>
@@ -658,6 +710,7 @@ Respond ONLY valid JSON array, no markdown:
             {/* RESUME */}
             {tab === "resume" && (
               <div ref={rRef} style={paper}>
+                {/* HEADER */}
                 <div style={{ textAlign: "center", marginBottom: 3 }}>
                   <div style={{ fontSize: 21, fontWeight: 700, color: "#1E3A5F", letterSpacing: "0.05em" }}>{MD.name.toUpperCase()}</div>
                 </div>
@@ -665,17 +718,32 @@ Respond ONLY valid JSON array, no markdown:
                   {MD.location} {" | "} {MD.email} {" | "} {MD.phone}
                 </div>
                 <div style={{ textAlign: "center", fontSize: 11, color: "#777", marginBottom: 2 }}>
-                  {MD.linkedin} {" | "} {MD.github}
+                  {MD.linkedin} {" | "} {MD.github} {" | "} {MD.portfolio}
                 </div>
-                <div style={{ textAlign: "center", fontSize: 10, color: "#555", fontStyle: "italic", marginBottom: 14 }}>
+                <div style={{ textAlign: "center", fontSize: 10, color: "#555", fontStyle: "italic", marginBottom: 12 }}>
                   {"Authorized to work in Canada (PGWP eligible)"}
                 </div>
+
+                {/* PROFESSIONAL SUMMARY */}
                 <SH t="PROFESSIONAL SUMMARY"/>
-                <p style={{ fontSize: 11.5, color: "#333", margin: "5px 0 8px", lineHeight: 1.65 }}>{res.overview}</p>
+                <p style={{ fontSize: 11.5, color: "#333", margin: "5px 0 4px", lineHeight: 1.65 }}>{res.overview}</p>
+
+                {/* KEY HIGHLIGHTS */}
+                {res.key_highlights && res.key_highlights.length > 0 && (
+                  <div style={{ margin: "4px 0 8px", paddingLeft: 10 }}>
+                    {res.key_highlights.map((h, i) => (
+                      <div key={i} style={{ fontSize: 11, color: "#333", lineHeight: 1.5, marginBottom: 1 }}>{"• " + h}</div>
+                    ))}
+                  </div>
+                )}
+
+                {/* TECHNICAL SKILLS (with proficiency levels) */}
                 <SH t="TECHNICAL SKILLS"/>
                 <div style={{ margin: "5px 0 8px" }}>
                   {res.skills?.map((s,i) => <div key={i} style={{ fontSize: 11.5, marginBottom: 2 }}><span style={{ fontWeight: 600 }}>{s.label}: </span><span style={{ color: "#333" }}>{s.items}</span></div>)}
                 </div>
+
+                {/* EDUCATION (before Experience for current students) */}
                 <SH t="EDUCATION"/>
                 {MD.education.map((ed,i) => (
                   <div key={i} style={{ marginBottom: 5 }}>
@@ -685,9 +753,13 @@ Respond ONLY valid JSON array, no markdown:
                     <div style={{ fontSize: 11, color: "#777", fontStyle: "italic", display: "flex", justifyContent: "space-between" }}>
                       <span>{ed.school}</span>{ed.gpa && <span>GPA: {ed.gpa}</span>}
                     </div>
-                    {i === 0 && <div style={{ fontSize: 10, color: "#666", marginTop: 1 }}>Coursework: {ed.coursework}</div>}
+                    {i === 0 && res.coursework && (
+                      <div style={{ fontSize: 10, color: "#666", marginTop: 1 }}>{"Relevant Coursework: " + res.coursework.join(", ")}</div>
+                    )}
                   </div>
                 ))}
+
+                {/* CERTIFICATIONS */}
                 {res.certifications && res.certifications.length > 0 && (
                   <>
                     <SH t="CERTIFICATIONS"/>
