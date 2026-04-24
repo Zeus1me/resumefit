@@ -146,6 +146,8 @@ export default function App() {
   const [tab, setTab] = useState("resume");
   const [copied, setCopied] = useState(false);
   const [covLoading, setCovLoading] = useState(false);
+  const [refineText, setRefineText] = useState("");
+  const [refining, setRefining] = useState(false);
   const [tipIdx, setTipIdx] = useState(Math.floor(Math.random() * TIPS.length));
   const rRef = useRef(null);
   const cRef = useRef(null);
@@ -220,16 +222,58 @@ export default function App() {
     setCovLoading(false);
   }
 
+  async function handleRefine() {
+    if (!refineText.trim()) return;
+    setRefining(true); setErr("");
+    const allInstr = (instr.trim() ? instr.trim() + "\n" : "") + refineText.trim();
+    try {
+      if (tab === "resume" || !cov) {
+        // Regenerate resume
+        const raw = await apiCall(makeResumeSys(pages), `Job posting:\n${posting}\nADDITIONAL INSTRUCTIONS: ${allInstr}`, pages === 2 ? 2000 : 1500);
+        let p; try { p = JSON.parse(raw); } catch { throw new Error("Resume parse failed. Try again."); }
+        setRes(p);
+        // Also regenerate cover letter if it exists
+        if (cov) {
+          const cRaw = await apiCall(COVER_SYS, `Job posting:\n${posting}\nADDITIONAL INSTRUCTIONS: ${allInstr}\n\nTailored resume overview: ${p.overview}\nTarget role: ${p.target_title}`, 1500);
+          let cp; try { cp = JSON.parse(cRaw); } catch { throw new Error("Cover letter parse failed."); }
+          setCov(cp);
+        }
+      } else {
+        // Regenerate cover letter only
+        const cRaw = await apiCall(COVER_SYS, `Job posting:\n${posting}\nADDITIONAL INSTRUCTIONS: ${allInstr}\n\nTailored resume overview: ${res.overview}\nTarget role: ${res.target_title}`, 1500);
+        let cp; try { cp = JSON.parse(cRaw); } catch { throw new Error("Cover letter parse failed."); }
+        setCov(cp);
+      }
+      setInstr(allInstr);
+      setRefineText("");
+    } catch (e) { setErr(e.message); }
+    setRefining(false);
+  }
+
   const getExp = id => MD.experience.find(e => e.id === id);
   const getBul = (eid, ids) => { const e = getExp(eid); return e ? ids.map(b => e.bullets.find(x => x.id === b)).filter(Boolean) : []; };
   const getProj = pid => MD.projects.find(p => p.id === pid);
-  function reset() { setStatus("idle"); setRes(null); setCov(null); setPosting(""); setUrl(""); setErr(""); setProg(""); setInstr(""); setTab("resume"); setCopied(false); setCovLoading(false); setGenType("resume"); }
+  function reset() { setStatus("idle"); setRes(null); setCov(null); setPosting(""); setUrl(""); setErr(""); setProg(""); setInstr(""); setTab("resume"); setCopied(false); setCovLoading(false); setGenType("resume"); setRefineText(""); setRefining(false); }
 
   function doDownload(ref, filename) {
     if (!ref.current) return;
     const w = window.open("", "_blank");
-    w.document.write(`<!DOCTYPE html><html><head><title>${filename}</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'DM Sans',sans-serif;padding:40px 52px;color:#1a1a1a;line-height:1.5;max-width:800px;margin:0 auto}@media print{body{padding:0}@page{margin:0.4in 0.5in;size:letter}}</style></head><body>${ref.current.innerHTML}</body></html>`);
-    w.document.close(); setTimeout(() => w.print(), 600);
+    w.document.write(`<!DOCTYPE html><html><head><title> </title>
+      <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+      <style>
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'DM Sans',sans-serif;padding:40px 52px;color:#1a1a1a;line-height:1.5;max-width:800px;margin:0 auto}
+        @media print{
+          body{padding:0}
+          @page{margin:0.5in 0.5in 0.5in 0.5in;size:letter}
+        }
+      </style>
+    </head><body>${ref.current.innerHTML}</body></html>`);
+    w.document.close();
+    setTimeout(() => {
+      // Try to trigger Save as PDF with no headers/footers hint
+      w.print();
+    }, 600);
   }
 
   function doCopy(ref) {
@@ -492,8 +536,42 @@ export default function App() {
               </div>
             )}
 
+            {/* REFINE PANEL */}
+            <div style={{ marginTop: 20, background: C.surface, border: `1px solid ${C.border}`, borderRadius: 12, overflow: "hidden" }}>
+              <div style={{ padding: "14px 20px 6px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <div style={{ fontSize: 13, fontWeight: 600 }}>{"🔄 Refine"}</div>
+                <div style={{ fontSize: 11, color: C.textD }}>
+                  {tab === "resume" && cov ? "Regenerates resume + cover letter" : tab === "cover" ? "Regenerates cover letter only" : "Regenerates resume"}
+                </div>
+              </div>
+              <div style={{ padding: "6px 20px 16px" }}>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <textarea value={refineText} onChange={e => setRefineText(e.target.value)}
+                    disabled={refining}
+                    placeholder='e.g. "Make the summary more concise", "Add more Python emphasis", "Stronger opening hook", "Mention PGWP eligibility"'
+                    style={{
+                      flex: 1, background: C.bg, border: `1px solid ${C.border}`, borderRadius: 8,
+                      padding: "10px 12px", fontSize: 12.5, fontFamily: "'DM Sans',sans-serif",
+                      color: C.text, resize: "none", outline: "none", minHeight: 44, maxHeight: 80,
+                      lineHeight: 1.5, boxSizing: "border-box"
+                    }}
+                    onFocus={fB} onBlur={bB} />
+                  <button onClick={handleRefine} disabled={!refineText.trim() || refining}
+                    style={{
+                      padding: "10px 20px", borderRadius: 8, border: "none",
+                      background: !refineText.trim() ? C.border : "linear-gradient(135deg,#F59E0B,#D97706)",
+                      color: !refineText.trim() ? C.textD : "#fff",
+                      fontSize: 12, fontWeight: 600, cursor: !refineText.trim() ? "not-allowed" : "pointer",
+                      fontFamily: "inherit", whiteSpace: "nowrap", alignSelf: "flex-end"
+                    }}>
+                    {refining ? <span style={{ display: "flex", alignItems: "center", gap: 6 }}><span className="rf-spin"/>{"Refining..."}</span> : "Refine"}
+                  </button>
+                </div>
+              </div>
+            </div>
+
             <div style={{ textAlign: "center", marginTop: 14, fontSize: 11, color: C.textD }}>
-              {"\"Download PDF\" opens your browser's save dialog — select \"Save as PDF\" as the destination"}
+              {"When saving as PDF: uncheck \"Headers and footers\" in the print dialog for a clean output"}
             </div>
           </div>
         )}
