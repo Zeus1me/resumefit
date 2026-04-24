@@ -148,6 +148,10 @@ export default function App() {
   const [covLoading, setCovLoading] = useState(false);
   const [refineText, setRefineText] = useState("");
   const [refining, setRefining] = useState(false);
+  const [questions, setQuestions] = useState([{ q: "", a: "" }]);
+  const [qaLoading, setQaLoading] = useState(false);
+  const [qaGenerated, setQaGenerated] = useState(false);
+  const qaRef = useRef(null);
   const [tipIdx, setTipIdx] = useState(Math.floor(Math.random() * TIPS.length));
   const rRef = useRef(null);
   const cRef = useRef(null);
@@ -250,10 +254,67 @@ export default function App() {
     setRefining(false);
   }
 
+  function addQuestion() { setQuestions([...questions, { q: "", a: "" }]); }
+  function removeQuestion(idx) { setQuestions(questions.filter((_, i) => i !== idx)); }
+  function updateQuestion(idx, val) { const nq = [...questions]; nq[idx] = { ...nq[idx], q: val }; setQuestions(nq); }
+
+  async function handleGenerateAnswers() {
+    const qs = questions.filter(q => q.q.trim());
+    if (qs.length === 0) return;
+    setQaLoading(true); setErr("");
+
+    const QA_SYS = `You answer job application screening questions on behalf of a candidate. Be specific, authentic, and concise. Use the candidate's real experience and numbers. Match the tone of the posting.
+
+CANDIDATE:
+- ${MD.name}, ${MD.location}
+- MS Data Analytics, Northeastern University Vancouver (GPA 3.8, graduating Jun 2026)
+- B.Eng Electrical & Electronic Engineering
+- Freelance Data Analyst 2021-present: churn models (-12% risk), Power BI/Tableau dashboards (-25% manual effort), SQL pipelines (500K+ records), R time-series forecasting, Scale AI NLP/LLM pipelines
+- Huawei intern: diagnostics (-15% failures)
+- Projects: LiDAR with Lumotive, Faster R-CNN FruitNet, bike sharing ML (R2>0.91), credit risk SHAP, ULMFiT, JobForge React app, Streamlit dashboard
+- Skills: Python, R, SQL, PyTorch, TensorFlow, Scikit-learn, Docker, AWS, Tableau, Power BI
+
+RULES:
+- Answer each question in 2-5 sentences unless the question asks for a simple value (like salary, yes/no, date)
+- Be specific with numbers and examples from the candidate's background
+- Sound human and confident, not robotic
+- If the question is about salary expectations, answer with a range appropriate for the role and Vancouver market
+- If the question is about availability, mention graduating June 2026 and PGWP eligibility
+- If the question is yes/no, give the answer then a brief supporting sentence
+
+Respond ONLY valid JSON array, no markdown:
+[{"question":"str","answer":"str"}, ...]`;
+
+    try {
+      const qList = qs.map(q => q.q.trim()).join("\n- ");
+      const extra = instr.trim() ? `\nContext: ${instr.trim()}` : "";
+      const raw = await apiCall(QA_SYS, `Job posting:\n${posting}\n\nQuestions to answer:\n- ${qList}${extra}\n\nTarget role: ${res?.target_title || ""}`, 2000);
+      let parsed;
+      try { parsed = JSON.parse(raw); } catch { throw new Error("Q&A parse failed. Try again."); }
+
+      const updated = questions.map(q => {
+        if (!q.q.trim()) return q;
+        const match = parsed.find(a => a.question.toLowerCase().includes(q.q.trim().toLowerCase().slice(0, 30)) || q.q.trim().toLowerCase().includes(a.question.toLowerCase().slice(0, 30)));
+        return match ? { q: q.q, a: match.answer } : q;
+      });
+      // If matching failed, just assign in order
+      let orderIdx = 0;
+      const final = updated.map(q => {
+        if (q.a || !q.q.trim()) return q;
+        if (parsed[orderIdx]) { const ans = parsed[orderIdx].answer; orderIdx++; return { q: q.q, a: ans }; }
+        return q;
+      });
+      setQuestions(final);
+      setQaGenerated(true);
+      setTab("qa");
+    } catch (e) { setErr(e.message); }
+    setQaLoading(false);
+  }
+
   const getExp = id => MD.experience.find(e => e.id === id);
   const getBul = (eid, ids) => { const e = getExp(eid); return e ? ids.map(b => e.bullets.find(x => x.id === b)).filter(Boolean) : []; };
   const getProj = pid => MD.projects.find(p => p.id === pid);
-  function reset() { setStatus("idle"); setRes(null); setCov(null); setPosting(""); setUrl(""); setErr(""); setProg(""); setInstr(""); setTab("resume"); setCopied(false); setCovLoading(false); setGenType("resume"); setRefineText(""); setRefining(false); }
+  function reset() { setStatus("idle"); setRes(null); setCov(null); setPosting(""); setUrl(""); setErr(""); setProg(""); setInstr(""); setTab("resume"); setCopied(false); setCovLoading(false); setGenType("resume"); setRefineText(""); setRefining(false); setQuestions([{ q: "", a: "" }]); setQaGenerated(false); setQaLoading(false); }
 
   function doDownload(ref, filename) {
     if (!ref.current) return;
@@ -434,7 +495,7 @@ export default function App() {
             {/* Tabs + actions */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, flexWrap: "wrap", gap: 10 }}>
               <div style={{ display: "flex", gap: 0, background: C.surface, border: `1px solid ${C.border}`, borderRadius: 10, padding: 3 }}>
-                {[["resume","Resume"], ...(cov ? [["cover","Cover Letter"]] : [])].map(([k,l]) => (
+                {[["resume","Resume"], ...(cov ? [["cover","Cover Letter"]] : []), ...(qaGenerated ? [["qa","Q&A"]] : [])].map(([k,l]) => (
                   <button key={k} onClick={() => { setTab(k); setCopied(false); }} style={{
                     padding: "8px 22px", borderRadius: 7, border: "none", fontSize: 13, fontWeight: 600,
                     cursor: "pointer", fontFamily: "inherit",
@@ -444,10 +505,10 @@ export default function App() {
               </div>
               <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
                 <span style={{ fontSize: 12, color: C.success, fontWeight: 600, marginRight: 4 }}>
-                  {"✓ "}{tab === "resume" ? res.target_title : (cov?.company_name || "")}
+                  {"✓ "}{tab === "resume" ? res.target_title : tab === "cover" ? (cov?.company_name || "") : "Q&A"}
                 </span>
-                <button onClick={() => doCopy(tab === "resume" ? rRef : cRef)} style={bSm(false)}>{copied ? "Copied!" : "Copy"}</button>
-                <button onClick={() => doDownload(tab === "resume" ? rRef : cRef, tab === "resume" ? `Resume_${res.filename_suffix}` : `CoverLetter_${cov?.company_name || ""}`)}
+                <button onClick={() => doCopy(tab === "resume" ? rRef : tab === "cover" ? cRef : qaRef)} style={bSm(false)}>{copied ? "Copied!" : "Copy"}</button>
+                <button onClick={() => doDownload(tab === "resume" ? rRef : tab === "cover" ? cRef : qaRef, tab === "resume" ? `Resume_${res.filename_suffix}` : tab === "cover" ? `CoverLetter_${cov?.company_name || ""}` : `QA_Answers`)}
                   style={{ ...bSm(false), background: "linear-gradient(135deg,#10B981,#059669)", border: "none" }}>
                   {"⬇ Download PDF"}
                 </button>
@@ -532,6 +593,67 @@ export default function App() {
                 <div style={{ fontSize: 11.5, color: "#333", marginTop: 24 }}>
                   <div>{cov.closing}</div>
                   <div style={{ fontWeight: 600, marginTop: 6 }}>{MD.name}</div>
+                </div>
+              </div>
+            )}
+
+            {/* Q&A TAB — answers display */}
+            {tab === "qa" && qaGenerated && (
+              <div ref={qaRef} style={paper}>
+                <div style={{ fontSize: 15, fontWeight: 700, color: "#1E3A5F", marginBottom: 16 }}>Application Questions</div>
+                {questions.filter(q => q.q.trim()).map((q, i) => (
+                  <div key={i} style={{ marginBottom: 16 }}>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: "#1E3A5F", marginBottom: 4 }}>{"Q: " + q.q}</div>
+                    <div style={{ fontSize: 12, color: "#333", lineHeight: 1.65, paddingLeft: 12, borderLeft: "2px solid #3B82F6" }}>{q.a || "No answer generated"}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* APPLICATION QUESTIONS — input panel (shows after first output, when not on Q&A tab with results) */}
+            {!(tab === "qa" && qaGenerated) && (
+              <div style={{ marginTop: 20, background: C.surface, border: `1px solid ${C.border}`, borderRadius: 12, overflow: "hidden" }}>
+                <div style={{ padding: "14px 20px 8px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={{ fontSize: 13, fontWeight: 600 }}>{"❓ Application Questions"}</div>
+                  <div style={{ fontSize: 11, color: C.textD }}>Paste screening questions from LinkedIn, Indeed, etc.</div>
+                </div>
+                <div style={{ padding: "4px 20px 16px" }}>
+                  {questions.map((q, i) => (
+                    <div key={i} style={{ display: "flex", gap: 8, marginBottom: 8, alignItems: "center" }}>
+                      <span style={{ fontSize: 11, color: C.textD, fontWeight: 600, width: 20, flexShrink: 0 }}>{i + 1}.</span>
+                      <input value={q.q} onChange={e => updateQuestion(i, e.target.value)}
+                        disabled={qaLoading}
+                        placeholder="e.g. Why are you interested in this role?"
+                        style={{
+                          flex: 1, background: C.bg, border: `1px solid ${C.border}`, borderRadius: 8,
+                          padding: "9px 12px", fontSize: 12.5, fontFamily: "'DM Sans',sans-serif",
+                          color: C.text, outline: "none", boxSizing: "border-box"
+                        }}
+                        onFocus={fB} onBlur={bB} />
+                      {questions.length > 1 && (
+                        <button onClick={() => removeQuestion(i)}
+                          style={{ padding: "6px 10px", borderRadius: 6, border: `1px solid ${C.border}`, background: "transparent", color: C.textD, fontSize: 12, cursor: "pointer", fontFamily: "inherit" }}>
+                          {"✕"}
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 8 }}>
+                    <button onClick={addQuestion}
+                      style={{ padding: "6px 14px", borderRadius: 7, border: `1px solid ${C.border}`, background: "transparent", color: C.textM, fontSize: 12, cursor: "pointer", fontFamily: "inherit" }}>
+                      {"+ Add Question"}
+                    </button>
+                    <button onClick={handleGenerateAnswers} disabled={!questions.some(q => q.q.trim()) || qaLoading}
+                      style={{
+                        padding: "9px 20px", borderRadius: 8, border: "none",
+                        background: !questions.some(q => q.q.trim()) ? C.border : "linear-gradient(135deg,#8B5CF6,#6D28D9)",
+                        color: !questions.some(q => q.q.trim()) ? C.textD : "#fff",
+                        fontSize: 12, fontWeight: 600, cursor: !questions.some(q => q.q.trim()) ? "not-allowed" : "pointer",
+                        fontFamily: "inherit"
+                      }}>
+                      {qaLoading ? <span style={{ display: "flex", alignItems: "center", gap: 6 }}><span className="rf-spin"/>{"Generating answers..."}</span> : "Generate Answers"}
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
