@@ -6,12 +6,13 @@ const MD = {
   email: "josephiyanu@gmail.com",
   phone: "+1 (236) 660-8515",
   linkedin: "linkedin.com/in/josephiyanu",
+  github: "github.com/Zeus1me",
   education: [
     { degree: "Master of Science in Data Analytics", school: "Northeastern University, Vancouver, BC", dates: "Sep 2024 \u2013 Jun 2026", gpa: "3.8 / 4.0", coursework: "Machine Learning, Deep Learning, NLP, Predictive Analytics, Data Mining, Cloud Computing, AI Ethics, Cybersecurity, Analytics Leadership, Optimization, Business Intelligence" },
     { degree: "Bachelor of Engineering, Electrical & Electronic Engineering", school: "Obafemi Awolowo University, Nigeria", dates: "2015 \u2013 2020", gpa: null, coursework: "Network Systems, Optimization, Applied Problem-Solving, Quantitative Methods, Signal Processing" }
   ],
   experience: [
-    { id: "freelance", title: "Freelance Data Analyst", company: "Remote", dates: "Jan 2021 \u2013 Present",
+    { id: "freelance", title: "Freelance Data Analyst", company: "Remote", dates: "2019 \u2013 Present",
       bullets: [
         { id: "churn", text: "Engineered churn prediction models using Random Forest, Logistic Regression, and GLMs in Python (scikit-learn), reducing client risk exposure by 12% and informing retention strategies across 3 retail accounts." },
         { id: "dashboards", text: "Developed 8+ automated Power BI and Tableau dashboards for revenue forecasting and KPI tracking, improving retail planning accuracy and eliminating 25% of manual reporting effort (~10 hours/week)." },
@@ -195,9 +196,11 @@ const COVER_SYS = `You are an elite cover letter writer using the PROBLEM-SOLUTI
 
 CANDIDATE:
 - Name: ${MD.name} | ${MD.location} | ${MD.email} | ${MD.phone}
+- LinkedIn: ${MD.linkedin} | GitHub: ${MD.github}
+- Authorized to work in Canada (PGWP eligible)
 - MS Data Analytics, Northeastern University Vancouver (GPA 3.8/4.0, graduating Jun 2026)
 - B.Eng Electrical & Electronic Engineering, Obafemi Awolowo University Nigeria
-- 5+ years analytics: freelance (churn models -12% risk, Power BI/Tableau dashboards -25% manual effort, SQL pipelines 500K+ records, R time-series forecasting), Huawei intern (diagnostics -15% failures), Scale AI NLP/LLM pipelines
+- 6+ years analytics: Full-time Data Analyst at Jonathan Kings Limited (logistics/retail/international business, 2021-2023: dashboards, Python analysis of 50K+ transactions, financial reporting, supply chain KPIs, $30K savings identified), freelance data analyst since 2019 (churn models -12% risk, Power BI/Tableau dashboards -25% manual effort, SQL pipelines 500K+ records, R time-series forecasting +18%), Huawei intern (diagnostics -15% failures)
 - Key projects: LiDAR point cloud with Lumotive (ROS2), Faster R-CNN FruitNet (4485 imgs, 11 classes, Docker+HuggingFace), bike sharing ML (R2>0.91, K-Means, PCA, Q-Learning), credit risk SHAP, ULMFiT text classification, Intel ResNet-18 transfer learning (F1=0.935), Nashville housing gradient boosting (R2=0.9481), JobForge React app, ResumeFit Netlify app, Amazon review Streamlit dashboard (500K rows), Steeves & Associates resource allocation (R/ggplot2), Nigerian election Chart.js dashboard, bicycle accidents Plotly dashboard (847K records), AWS Glue PySpark ETL, Cymax demand forecasting, workforce scheduling optimization
 - Skills: Python, R, SQL, JavaScript, PyTorch, TensorFlow, Scikit-learn, fastai, Docker, AWS, Tableau, Power BI, Streamlit, ggplot2, Git, FastAPI, ROS2
 
@@ -372,10 +375,14 @@ CANDIDATE:
 - ${MD.name}, ${MD.location}
 - MS Data Analytics, Northeastern University Vancouver (GPA 3.8, graduating Jun 2026)
 - B.Eng Electrical & Electronic Engineering
-- Freelance Data Analyst 2021-present: churn models (-12% risk), Power BI/Tableau dashboards (-25% manual effort), SQL pipelines (500K+ records), R time-series forecasting, Scale AI NLP/LLM pipelines
+- Authorized to work in Canada (PGWP eligible)
+- Data Analyst at Jonathan Kings Limited (logistics/retail, 2021-2023): Power BI/Tableau dashboards, Python analysis of 50K+ transactions, financial reporting, supply chain KPIs, $30K savings, reported to director
+- Freelance Data Analyst since 2019: churn models (-12% risk), Power BI/Tableau dashboards (-25% manual effort), SQL pipelines (500K+ records), R time-series forecasting (+18%)
+- Freelance Technical Writer (Upwork): 30+ articles on AI, SaaS, blockchain, nonprofit
 - Huawei intern: diagnostics (-15% failures)
-- Projects: LiDAR with Lumotive, Faster R-CNN FruitNet, bike sharing ML (R2>0.91), credit risk SHAP, ULMFiT, JobForge React app, Streamlit dashboard
-- Skills: Python, R, SQL, PyTorch, TensorFlow, Scikit-learn, Docker, AWS, Tableau, Power BI
+- Projects: LiDAR with Lumotive, Faster R-CNN FruitNet, bike sharing ML (R2>0.91), credit risk SHAP, ULMFiT, JobForge React app, ResumeFit Netlify app, Streamlit dashboard, Nashville housing (R2=0.9481), bicycle accidents Plotly (847K records)
+- Skills: Python, R, SQL, JavaScript, PyTorch, TensorFlow, Scikit-learn, Docker, AWS, Tableau, Power BI, Git
+- GitHub: ${MD.github}
 
 RULES:
 - Answer each question in 2-5 sentences unless the question asks for a simple value (like salary, yes/no, date)
@@ -647,8 +654,14 @@ Respond ONLY valid JSON array, no markdown:
                 <div style={{ textAlign: "center", marginBottom: 3 }}>
                   <div style={{ fontSize: 21, fontWeight: 700, color: "#1E3A5F", letterSpacing: "0.05em" }}>{MD.name.toUpperCase()}</div>
                 </div>
-                <div style={{ textAlign: "center", fontSize: 11, color: "#777", marginBottom: 14 }}>
-                  {MD.location} {" | "} {MD.email} {" | "} {MD.phone} {" | "} {MD.linkedin}
+                <div style={{ textAlign: "center", fontSize: 11, color: "#777", marginBottom: 2 }}>
+                  {MD.location} {" | "} {MD.email} {" | "} {MD.phone}
+                </div>
+                <div style={{ textAlign: "center", fontSize: 11, color: "#777", marginBottom: 2 }}>
+                  {MD.linkedin} {" | "} {MD.github}
+                </div>
+                <div style={{ textAlign: "center", fontSize: 10, color: "#555", fontStyle: "italic", marginBottom: 14 }}>
+                  {"Authorized to work in Canada (PGWP eligible)"}
                 </div>
                 <SH t="PROFESSIONAL SUMMARY"/>
                 <p style={{ fontSize: 11.5, color: "#333", margin: "5px 0 8px", lineHeight: 1.65 }}>{res.overview}</p>
@@ -694,6 +707,7 @@ Respond ONLY valid JSON array, no markdown:
                 <div style={{ marginBottom: 18 }}>
                   <div style={{ fontSize: 13.5, fontWeight: 700, color: "#1E3A5F" }}>{MD.name}</div>
                   <div style={{ fontSize: 11.5, color: "#777" }}>{MD.location} | {MD.email} | {MD.phone}</div>
+                  <div style={{ fontSize: 11.5, color: "#777" }}>{MD.linkedin} | {MD.github}</div>
                 </div>
                 <div style={{ fontSize: 11.5, color: "#777", marginBottom: 18 }}>{cov.date}</div>
                 <div style={{ fontSize: 11.5, color: "#333", marginBottom: 10, fontWeight: 600 }}>{cov.salutation}</div>
