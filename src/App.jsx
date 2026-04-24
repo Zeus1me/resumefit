@@ -191,6 +191,76 @@ SELECTION RULES:
 - Rewrite bullet text to echo the posting's exact terminology and keywords while keeping metrics accurate
 - Order projects by relevance to the posting, not by date
 
+=== ROLE-SPECIFIC TAILORING RULES (detect role type from posting and apply) ===
+
+IF ROLE IS "DATA ANALYST" or "QUANTITATIVE ANALYST" or "ANALYTICS":
+- Skills priority order: SQL (Advanced), Python (Advanced), Tableau/Power BI (Advanced), Excel, R, statistical analysis
+- Must-use keywords: data analysis, dashboards, KPIs, stakeholder communication, data-driven decisions, ETL, data quality, reporting
+- Lead with: JKL dashboards bullet, freelance SQL/dashboards bullets
+- Best projects: Streamlit dashboard, bicycle accidents (847K records), Steeves, Nashville housing
+- Emphasize: business impact, stakeholder communication, data visualization, cross-functional collaboration
+- Avoid leading with: deep learning, neural networks, computer vision (too ML-heavy for analyst roles)
+
+IF ROLE IS "DATA SCIENTIST":
+- Skills priority: Python (Advanced), R (Proficient), scikit-learn, PyTorch, TensorFlow, statistical modeling, ML algorithms
+- Must-use keywords: machine learning, predictive modeling, statistical analysis, A/B testing, feature engineering, model evaluation, hypothesis testing
+- Lead with: freelance churn models bullet, time-series forecasting bullet
+- Best projects: bike sharing (R2>0.91), credit risk SHAP, heart disease multi-model, Nashville housing (R2=0.9481)
+- Emphasize: model building, experimentation, statistical rigor, research methodology
+- Include coursework: Machine Learning, Statistical Modeling, Deep Learning, Predictive Analytics
+
+IF ROLE IS "ML ENGINEER" or "MACHINE LEARNING ENGINEER" or "AI ENGINEER":
+- Skills priority: Python (Advanced), PyTorch, TensorFlow, Docker, AWS, FastAPI, Git, CI/CD concepts
+- Must-use keywords: model deployment, production ML, deep learning, computer vision, NLP, API development, containerization, MLOps
+- Lead with: freelance churn models, JKL Python scripts
+- Best projects: FruitNet (Faster R-CNN, Docker, HuggingFace), Intel ResNet-18, text classification ULMFiT, LiDAR capstone
+- Emphasize: deployment, production systems, model serving, Docker, API design, scalability
+- Show GitHub link prominently — ML engineers check code
+
+IF ROLE IS "BUSINESS ANALYST" or "BI ANALYST" or "BUSINESS INTELLIGENCE":
+- Skills priority: Tableau (Advanced), Power BI (Advanced), Excel (Advanced), SQL, requirements gathering, stakeholder communication
+- Must-use keywords: business intelligence, requirements gathering, stakeholder alignment, cross-functional collaboration, KPI development, process improvement, data-driven decisions
+- Lead with: JKL stakeholder/dashboards bullets, freelance dashboards/presentations bullets
+- Best projects: Steeves (consulting), Cymax demand forecasting, Streamlit dashboard
+- Emphasize: business problem solving, stakeholder communication, process improvement, reporting
+- Include Financial Accounting certification
+
+IF ROLE IS "FINANCIAL ANALYST" or "QUANT" or "INVESTMENT" or "FINANCE":
+- Skills priority: Python (Advanced), SQL (Advanced), R (Proficient), Excel (Advanced, VBA), statistical modeling, time-series forecasting
+- Must-use keywords: financial modeling, risk analysis, quantitative analysis, forecasting, data quality, investment analytics, portfolio analysis, regression analysis, time-series
+- Lead with: JKL financial reporting bullet, freelance time-series bullet, freelance churn (risk modeling)
+- Best projects: credit risk SHAP, Nashville housing (regression), bike sharing (forecasting)
+- Include BOTH certifications: ai_practice AND fin_accounting
+- Emphasize: financial data, risk reduction, forecasting accuracy, P&L, data quality, large datasets
+- Mirror finance-specific language from posting (e.g., "alpha," "data assets," "investment engine," "data quality")
+
+IF ROLE IS "DATA ENGINEER" or "ANALYTICS ENGINEER":
+- Skills priority: SQL (Advanced), Python (Advanced), AWS (S3, Glue), PySpark, ETL, Docker, Git
+- Must-use keywords: ETL pipelines, data pipelines, data quality, data validation, cloud infrastructure, big data, data modeling, production deployment
+- Lead with: freelance SQL/ETL bullet, JKL Python scripts bullet
+- Best projects: AWS Glue PySpark, Streamlit dashboard, LiDAR capstone (data processing)
+- Emphasize: pipeline building, data quality, automation, cloud, scalability, reliability
+
+IF ROLE IS "MARKETING ANALYST" or "PRODUCT ANALYST" or "GROWTH ANALYST":
+- Skills priority: SQL, Python, Tableau, A/B testing, Google Analytics concepts, Excel
+- Must-use keywords: A/B testing, customer segmentation, conversion rates, campaign performance, funnel analysis, cohort analysis, user behavior, retention
+- Lead with: freelance churn bullet, JKL CRM bullet, freelance dashboards
+- Best projects: credit risk (churn), marketing campaign response, subscription renewal
+- Include semrush_seo certification
+- Emphasize: customer analytics, retention, segmentation, campaign optimization
+
+IF ROLE IS "TECHNICAL WRITER" or "CONTENT" or "DOCUMENTATION":
+- include_writer: true
+- Skills priority: Technical writing, documentation, APA formatting, Quarto, Markdown, stakeholder communication
+- Lead with: writer bullets, freelance presentations bullet
+- Best projects: Steeves (consulting documentation), Cymax (business proposal)
+- Include linkedin_writing certification
+
+DEFAULT (if role type unclear):
+- Balance between analyst and scientist positioning
+- Include a mix of SQL, Python, visualization, and ML skills
+- Select projects that show breadth: one dashboard, one ML model, one deployment
+
 OVERVIEW RULES (mandatory — this is CRITICAL):
 - The overview describes the CANDIDATE, not the job. NEVER describe what the role requires. NEVER start with "This role requires" or "The candidate needs."
 - MUST be written in FIRST PERSON PERSPECTIVE about Joseph. It is HIS summary, selling HIM.
