@@ -198,6 +198,11 @@ METRIC ACCURACY (CRITICAL — NEVER VIOLATE):
 - If you need a number not in this list, use the closest accurate one or omit the metric.
 - NEVER combine metrics to create larger fake numbers (e.g., don't add 8 dashboards + 10 JKL dashboards to claim 18+).
 
+TOOL/SKILL ACCURACY (CRITICAL):
+- ONLY include tools and technologies that appear in the candidate's skills data above.
+- NEVER add tools the candidate hasn't listed: no MATLAB, no Databricks, no Spark (unless PySpark), no Kubernetes, no Airflow, no dbt, no Looker, no BigQuery.
+- If the posting asks for a tool not in the candidate's skills, do NOT add it. Instead, emphasize the closest matching tool the candidate actually has.
+
 KEYWORD MIRRORING (CRITICAL):
 - Extract 5-10 exact phrases from the job posting and weave them verbatim into bullets and summary
 - If the posting says "data quality and reliability," use those exact words — not "data accuracy"
@@ -571,10 +576,14 @@ Respond ONLY valid JSON array, no markdown:
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
       <style>
         *{box-sizing:border-box;margin:0;padding:0}
-        body{font-family:'DM Sans',sans-serif;padding:40px 52px;color:#1a1a1a;line-height:1.5;max-width:800px;margin:0 auto}
+        html,body{background:#ffffff;background-color:#ffffff}
+        body{font-family:'DM Sans',sans-serif;padding:40px 52px;color:#1a1a1a;line-height:1.5;max-width:800px;margin:0 auto;background:#ffffff}
+        a{color:#1E3A5F;text-decoration:none}
         @media print{
+          html,body{background:#ffffff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
           body{padding:0}
           @page{margin:0.5in 0.5in 0.5in 0.5in;size:letter}
+          a{color:#1E3A5F!important}
         }
       </style>
     </head><body>${ref.current.innerHTML}</body></html>`);
@@ -824,9 +833,9 @@ Respond ONLY valid JSON array, no markdown:
                   {MD.location} {" | "} {MD.email} {" | "} {MD.phone}
                 </div>
                 <div style={{ textAlign: "center", fontSize: 10.5, marginBottom: 1 }}>
-                  <a href={"https://www." + MD.linkedin} style={{ color: "#3B82F6", textDecoration: "none" }}>{MD.linkedin}</a>
+                  <a href={"https://www." + MD.linkedin} style={{ color: "#1E3A5F", textDecoration: "underline" }}>{MD.linkedin}</a>
                   {" | "}
-                  <a href={"https://" + MD.github} style={{ color: "#3B82F6", textDecoration: "none" }}>{MD.github}</a>
+                  <a href={"https://" + MD.github} style={{ color: "#1E3A5F", textDecoration: "underline" }}>{MD.github}</a>
                 </div>
                 <div style={{ textAlign: "center", fontSize: 9.5, color: "#555", fontStyle: "italic", marginBottom: 8 }}>
                   {"Authorized to work in Canada (PGWP eligible)"}
@@ -883,7 +892,7 @@ Respond ONLY valid JSON array, no markdown:
                     <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10.5 }}>
                       <span>
                         <span style={{ fontWeight: 600 }}>{p.title}</span>
-                        {p.url && <>{" | "}<a href={"https://" + p.url} style={{ color: "#3B82F6", textDecoration: "none", fontSize: 9.5 }}>{p.url}</a></>}
+                        {p.url && <>{" | "}<a href={"https://" + p.url} style={{ color: "#1E3A5F", textDecoration: "underline", fontSize: 9.5 }}>{p.url}</a></>}
                       </span>
                       <span style={{ color: "#777", flexShrink: 0, marginLeft: 8 }}>{p.dates}</span>
                     </div>
@@ -1007,7 +1016,7 @@ Respond ONLY valid JSON array, no markdown:
             </div>
 
             <div style={{ textAlign: "center", marginTop: 14, fontSize: 11, color: C.textD }}>
-              {"When saving as PDF: uncheck \"Headers and footers\" in the print dialog for a clean output"}
+              {"When saving as PDF: uncheck \"Headers and footers\" and check \"Background graphics\" in print settings"}
             </div>
           </div>
         )}
@@ -1037,7 +1046,7 @@ function EB({ exp, bul }) {
   </div>);
 }
 
-const paper = { background: "#fff", borderRadius: 12, padding: "28px 36px", color: "#1a1a1a", fontFamily: "'DM Sans','Segoe UI',sans-serif", lineHeight: 1.4, boxShadow: "0 4px 30px rgba(0,0,0,0.5)" };
+const paper = { background: "#ffffff", backgroundColor: "#ffffff", borderRadius: 12, padding: "28px 36px", color: "#1a1a1a", fontFamily: "'DM Sans','Segoe UI',sans-serif", lineHeight: 1.4, boxShadow: "0 2px 20px rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.1)" };
 const taS = { width: "100%", minHeight: 150, maxHeight: 400, background: "#06080F", border: "1px solid #1C2333", borderRadius: 10, padding: "12px 14px", fontSize: 13, fontFamily: "'JetBrains Mono',monospace", color: "#E8ECF4", resize: "none", outline: "none", lineHeight: 1.6, boxSizing: "border-box" };
 const fB = e => { e.target.style.borderColor = "#3B82F6"; };
 const bB = e => { e.target.style.borderColor = "#1C2333"; };
