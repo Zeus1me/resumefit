@@ -7,53 +7,84 @@ const MD = {
   phone: "+1 (236) 660-8515",
   linkedin: "linkedin.com/in/josephiyanu",
   education: [
-    { degree: "Master of Science in Data Analytics", school: "Northeastern University, Vancouver, BC", dates: "Sep 2024 \u2013 Jun 2026", gpa: "3.8 / 4.0", coursework: "Machine Learning, Deep Learning, NLP, Predictive Analytics, Data Mining, Cloud Computing, AI Ethics, Cybersecurity Fundamentals" },
-    { degree: "Bachelor of Engineering, Electrical & Electronic Engineering", school: "Obafemi Awolowo University, Nigeria", dates: "2015 \u2013 2020", gpa: null, coursework: "Network Systems, Optimization, Applied Problem-Solving, Quantitative Methods" }
+    { degree: "Master of Science in Data Analytics", school: "Northeastern University, Vancouver, BC", dates: "Sep 2024 \u2013 Jun 2026", gpa: "3.8 / 4.0", coursework: "Machine Learning, Deep Learning, NLP, Predictive Analytics, Data Mining, Cloud Computing, AI Ethics, Cybersecurity, Analytics Leadership, Optimization, Business Intelligence" },
+    { degree: "Bachelor of Engineering, Electrical & Electronic Engineering", school: "Obafemi Awolowo University, Nigeria", dates: "2015 \u2013 2020", gpa: null, coursework: "Network Systems, Optimization, Applied Problem-Solving, Quantitative Methods, Signal Processing" }
   ],
   experience: [
     { id: "freelance", title: "Freelance Data Analyst", company: "Remote", dates: "Jan 2021 \u2013 Present",
       bullets: [
-        { id: "churn", text: "Built churn prediction models (Random Forest, Logistic Regression, GLM) in Python that reduced client risk exposure by 12% and informed data-driven retention strategies." },
-        { id: "dashboards", text: "Developed automated Power BI and Tableau dashboards for revenue forecasting, improving retail planning accuracy and reducing manual reporting effort by 25%." },
-        { id: "sql", text: "Designed and optimized SQL pipelines for data extraction, transformation, and analysis across datasets of 500K+ records, accelerating reporting turnaround." },
-        { id: "scaleai", text: "Contributed to NLP/LLM evaluation pipelines at Scale AI (Balba project), applying statistical validation for production-grade language models." },
-        { id: "vba", text: "Automated Excel reporting workflows with VBA macros, reducing manual effort for clients by 25% and improving data integrity." },
-        { id: "timeseries", text: "Developed R-based time-series forecasting models and automated demand forecasts, improving financial forecasting accuracy for retail clients." },
-        { id: "presentations", text: "Prepared clear analytical summaries and presentations for non-technical stakeholders to guide financial strategy and business planning." }
+        { id: "churn", text: "Engineered churn prediction models using Random Forest, Logistic Regression, and GLMs in Python (scikit-learn), reducing client risk exposure by 12% and informing retention strategies across 3 retail accounts." },
+        { id: "dashboards", text: "Developed 8+ automated Power BI and Tableau dashboards for revenue forecasting and KPI tracking, improving retail planning accuracy and eliminating 25% of manual reporting effort (~10 hours/week)." },
+        { id: "sql", text: "Optimized SQL-based ETL pipelines for data extraction, transformation, and analysis across datasets of 500K+ records, accelerating reporting turnaround by 40% and enabling real-time stakeholder access." },
+        { id: "scaleai", text: "Evaluated 500+ AI-generated responses at Scale AI (Balba project) for accuracy, tone, and completeness, supporting reinforcement learning from human feedback (RLHF) workflows for production NLP/LLM models." },
+        { id: "vba", text: "Automated Excel reporting workflows with VBA macros across 5 client accounts, reducing manual data entry effort by 25% and improving data integrity for monthly financial reports." },
+        { id: "timeseries", text: "Built R-based time-series forecasting models (ARIMA, seasonal decomposition) for demand prediction, improving financial forecasting accuracy by 18% for retail clients." },
+        { id: "presentations", text: "Delivered 15+ analytical presentations and executive summaries translating complex statistical findings into actionable business recommendations for non-technical stakeholders." },
+        { id: "writing", text: "Produced 30+ technical and business content pieces across AI, analytics, SaaS, blockchain, and nonprofit sectors for clients on Upwork, combining research ability with clear stakeholder-focused communication." },
+        { id: "aitrainer", text: "Assessed chatbot response quality across 500+ evaluations at Scale AI, scoring accuracy, helpfulness, and safety to train production-grade language models via RLHF pipelines." }
       ]
     },
     { id: "huawei", title: "Field Engineering Intern", company: "Huawei Technologies, Nigeria", dates: "May 2019 \u2013 Aug 2019",
       bullets: [
-        { id: "diagnostics", text: "Applied data-driven diagnostics to network subsystems, reducing system failures by 15% through root-cause analysis and preventive maintenance." },
-        { id: "reports", text: "Produced technical performance reports for senior leadership, translating complex metrics into actionable operational recommendations." }
+        { id: "diagnostics", text: "Implemented data-driven diagnostic workflows across 12+ network subsystems, reducing system failures by 15% through root-cause analysis and preventive maintenance scheduling." },
+        { id: "reports", text: "Produced weekly technical performance reports for senior leadership (audience of 20+), translating complex network metrics into actionable operational recommendations that improved uptime KPIs." }
       ]
     },
     { id: "airtel", title: "Telecom Engineering Intern", company: "Airtel Nigeria", dates: "Jul 2019 \u2013 Dec 2019",
       bullets: [
-        { id: "kpi", text: "Monitored KPIs and maintained incident logs for NOC/field teams, contributing to root-cause chronologies used in post-incident reviews." },
-        { id: "briefs", text: "Produced concise status briefs for non-technical stakeholders, improving decision cycle time." }
+        { id: "kpi", text: "Tracked 10+ network KPIs and maintained incident logs for NOC/field teams across 3 regions, contributing to root-cause chronologies that reduced mean resolution time." },
+        { id: "briefs", text: "Delivered concise daily status briefs to non-technical stakeholders, streamlining cross-team decision cycles and improving operational transparency." }
       ]
     }
   ],
   projects: [
-    { id: "lidar", title: "LiDAR Point Cloud Smart Stitching \u2014 Capstone with Lumotive Inc.", dates: "Jan 2026 \u2013 Present", text: "Developing rain-scatter filtering algorithms for MD42 LiDAR sensor data across three echo return streams using Python and ROS2, improving 3D point cloud accuracy for autonomous systems." },
-    { id: "fruitnet", title: "FruitNet \u2014 Object Detection Microservice", dates: "Mar 2026", text: "Built and deployed a Faster R-CNN fruit detection API (FastAPI + Docker) on Hugging Face Spaces; fine-tuned on Fruits 360 dataset with custom label correction mapping." },
-    { id: "bikesharing", title: "Bike Sharing Demand Analysis \u2014 End-to-End ML Pipeline", dates: "Feb 2026", text: "Applied K-Means, PCA, Random Forest (R\u00B2 > 0.91), Q-Learning, and neural networks on UCI Bike Sharing Dataset; delivered 13-slide executive presentation with 17 embedded visualizations." },
-    { id: "fruitvision", title: "Fruit Vision Classifier \u2014 Google Cloud Vision API", dates: "Mar 2026", text: "Evaluated Cloud Vision API for fruit classification; improved accuracy from 19.5% to 52.5% using custom synonym dictionaries. Deployed on Hugging Face." },
-    { id: "creditrisk", title: "Customer Churn & Credit Risk Modelling", dates: "2024 \u2013 2025", text: "Built classification and regression models (Logistic Regression, XGBoost, GLMs) on German Credit and retail datasets; applied SHAP for model interpretability and business-ready risk scoring." },
-    { id: "textclass", title: "Text Classification \u2014 ULMFiT & NLP Pipeline", dates: "Mar 2026", text: "Fine-tuned AWD-LSTM via ULMFiT (fastai) on AG News corpus; compared to TF-IDF + LinearSVC baseline." },
-    { id: "jobforge", title: "JobForge \u2014 AI-Powered Job Search Application", dates: "Apr 2026", text: "Built a full-featured React job search app with AI-powered job matching, skill gap analysis, Kanban tracker, and cover letter generation." },
-    { id: "streamlit", title: "Amazon Review Analytics Dashboard", dates: "Dec 2025", text: "Developed a Streamlit dashboard for Amazon movie review sentiment analysis, deployed on Streamlit Community Cloud with ~500K sampled rows." },
-    { id: "heartdisease", title: "Heart Disease Prediction \u2014 Multi-Model Comparison", dates: "Feb 2026", text: "Evaluated 9 supervised learning algorithms and 5 neural network architectures on UCI Heart Disease dataset." },
-    { id: "mnist", title: "MNIST Digit Classification", dates: "Jan 2026", text: "Achieved 96% accuracy with MLP and 95.39% with Random Forest on MNIST; compared multiple model architectures." }
+    // --- CAPSTONE ---
+    { id: "lidar", title: "LiDAR Point Cloud Smart Stitching \u2014 Capstone with Lumotive Inc.", dates: "Jan 2026 \u2013 Present", text: "Developing rain-scatter filtering algorithms for MD42 LiDAR sensor data across three echo return streams using Python and ROS2, improving 3D point cloud accuracy for autonomous systems. Running parallel workflows on M4 Mac (native Python with rosbags/pyntcloud) and UTM x86 Ubuntu VM (ROS2/RViz2).", tags: ["python","computer_vision","engineering","ros2","3d","autonomous"] },
+    // --- FULL-STACK / PRODUCT ---
+    { id: "jobforge", title: "JobForge \u2014 AI-Powered Job Search Application", dates: "Apr 2026", text: "Built a full-featured React job search app with AI-powered job matching, skill gap analysis, Kanban tracker, cover letter generation, and a three-tier search system using curated local database, Remotive API, and Claude-generated listings.", tags: ["react","javascript","fullstack","ai","product"] },
+    { id: "resumefit", title: "ResumeFit \u2014 AI Resume Tailoring Web App", dates: "Apr 2026", text: "Built and deployed a Vite+React web app on Netlify with serverless Claude API integration that tailors resumes, generates cover letters, and answers application questions based on job postings. Features URL scraping, 1/2-page toggle, and PDF export.", tags: ["react","javascript","fullstack","ai","product","deployment"] },
+    // --- DEEP LEARNING / COMPUTER VISION ---
+    { id: "fruitnet", title: "FruitNet \u2014 Object Detection Microservice", dates: "Mar 2026", text: "Built and deployed a Faster R-CNN fruit detection API (FastAPI + Docker) on Hugging Face Spaces; fine-tuned on 4,485 images across 11 fruit classes with custom label correction mapping and bounding box detection.", tags: ["ml","deep_learning","computer_vision","docker","api","deployment","pytorch"] },
+    { id: "fruitvision", title: "Fruit Vision Classifier \u2014 Google Cloud Vision API", dates: "Mar 2026", text: "Evaluated Cloud Vision API for fruit classification; improved accuracy from 19.5% to 52.5% using custom synonym dictionaries and increased maxResults. Deployed on Hugging Face.", tags: ["cloud","computer_vision","api","google_cloud"] },
+    { id: "intelcv", title: "Intel Image Classification \u2014 ResNet-18 Transfer Learning", dates: "Mar 2026", text: "Applied transfer learning with ResNet-18 on Intel Image Classification dataset (6 classes). Compared overfitting baseline, regularized model (macro F1 0.9353), and from-scratch baseline (macro F1 0.8453) using PyTorch.", tags: ["deep_learning","computer_vision","pytorch","transfer_learning"] },
+    // --- NLP ---
+    { id: "textclass", title: "Text Classification \u2014 ULMFiT & NLP Pipeline", dates: "Mar 2026", text: "Fine-tuned AWD-LSTM via ULMFiT (fastai) on 10,000 AG News samples (4 classes). Compared to TF-IDF + LinearSVC baseline using accuracy and macro-F1 on controlled 80/10/10 splits.", tags: ["nlp","deep_learning","fastai","text","classification"] },
+    // --- ML / ANALYTICS ---
+    { id: "bikesharing", title: "Bike Sharing Demand Analysis \u2014 End-to-End ML Pipeline", dates: "Feb 2026", text: "Applied K-Means, PCA, Random Forest (R\u00B2 > 0.91), Q-Learning, and neural networks on UCI Bike Sharing Dataset; delivered 13-slide executive presentation with 17 embedded visualizations.", tags: ["ml","analytics","visualization","clustering","regression","reinforcement_learning"] },
+    { id: "heartdisease", title: "Heart Disease Prediction \u2014 Multi-Model Comparison", dates: "Feb 2026", text: "Evaluated 9 supervised learning algorithms and 5 neural network architectures on UCI Heart Disease dataset using modular PyCharm structure. Focused on classification, risk prediction, and model interpretability.", tags: ["ml","deep_learning","healthcare","classification"] },
+    { id: "creditrisk", title: "Customer Churn & Credit Risk Modelling", dates: "2024 \u2013 2025", text: "Built classification and regression models (Logistic Regression, XGBoost, GLMs) on German Credit and retail datasets; applied SHAP for model interpretability and business-ready risk scoring.", tags: ["ml","classification","risk","business","interpretability"] },
+    { id: "nashville", title: "Nashville Housing Price Prediction", dates: "Jan 2026", text: "Built and compared Linear Regression, Decision Tree, Random Forest, and Gradient Boosting models for housing price prediction, achieving R\u00B2=0.9481 with gradient boosting. Evaluated feature importance and predictive accuracy.", tags: ["ml","regression","real_estate","gradient_boosting"] },
+    { id: "mnist", title: "MNIST Digit Classification", dates: "Jan 2026", text: "Developed a reproducible image classification pipeline comparing Random Forest (95.39%) and MLP (96.00%) on MNIST, including preprocessing, pixel scaling, zero-variance removal, and model evaluation.", tags: ["ml","deep_learning","classification","computer_vision"] },
+    { id: "carloan", title: "Car Price Prediction \u2014 Multiple Linear Regression", dates: "2025", text: "Built multiple linear regression models to predict car prices, applying feature selection, multicollinearity diagnostics (VIF), and evaluation with R\u00B2, adjusted R\u00B2, and RMSE.", tags: ["ml","regression","statistics"] },
+    { id: "personalloan", title: "Bank Personal Loan Approval Classification", dates: "2025", text: "Developed logistic regression classification model to predict personal loan acceptance, evaluating with confusion matrices, ROC analysis, precision, recall, and F1-score.", tags: ["ml","classification","finance","logistic_regression"] },
+    { id: "marketing", title: "Marketing Campaign Response Prediction", dates: "2025", text: "Compared Logistic Regression and SVM for marketing response prediction, using SMOTE for class imbalance. Evaluated with ROC-AUC, average precision, F1-score, and accuracy.", tags: ["ml","classification","marketing","smote"] },
+    { id: "subscription", title: "Magazine Subscription Renewal Prediction", dates: "2025", text: "Built logistic regression model for magazine subscription renewal prediction achieving 88.34% ROC-AUC. Applied feature engineering and business interpretation of churn signals.", tags: ["ml","classification","marketing","churn"] },
+    // --- BI / DASHBOARDS ---
+    { id: "streamlit", title: "Amazon Movie Review Analytics Dashboard", dates: "Dec 2025", text: "Developed and deployed an interactive Streamlit dashboard analyzing Amazon movie review trends using Python, pandas, and Parquet workflows. Built dynamic date/year filters, rating distribution visuals, and time-series analytics. Deployed on Streamlit Community Cloud with ~500K sampled rows.", tags: ["python","streamlit","visualization","dashboard","cloud","deployment"] },
+    { id: "steeves", title: "Resource Allocation Analytics \u2014 Steeves & Associates", dates: "Sep \u2013 Nov 2025", text: "Conducted exploratory analysis of FY2019\u2013FY2025 resource-hour data for IT consulting sponsor project. Used R and ggplot2 to visualize allocation trends, HHI concentration analysis, and utilization/billability metrics for improving project delivery efficiency.", tags: ["r","analytics","consulting","visualization","eda","business"] },
+    // --- DATA MINING ---
+    { id: "titanic", title: "Titanic Survival Analysis \u2014 Data Mining", dates: "Oct 2025", text: "Conducted survival pattern analysis using R, dplyr, ggplot2, and gt tables, producing a clear report translating data mining results into accessible stakeholder insights.", tags: ["r","data_mining","eda","visualization"] },
+    { id: "imdb", title: "IMDB Web Scraping & Analysis", dates: "Jan 2026", text: "Built a web scraping pipeline using BeautifulSoup to extract IMDB movie data, performed EDA and visualization in Python.", tags: ["python","web_scraping","eda"] },
+    { id: "mlktext", title: "MLK Speech Text Mining \u2014 21 Visualizations", dates: "Jan 2026", text: "Conducted text mining analysis of Martin Luther King's 'I Have a Dream' speech using R, producing 21 visualizations including word frequencies, sentiment analysis, and n-gram patterns.", tags: ["r","nlp","text_mining","visualization"] },
+    { id: "loanpred", title: "Loan Prediction Analysis \u2014 LASSO & Ensemble Methods", dates: "Feb 2026", text: "Built loan prediction models using LASSO logistic regression, Random Forest, XGBoost, and ensemble methods in R with caret. Compared model performance for credit risk assessment.", tags: ["r","ml","classification","ensemble","risk"] },
+    { id: "bicycleaccidents", title: "Bicycle Accidents EDA Dashboard", dates: "Feb 2026", text: "Developed an interactive Python/Plotly dashboard analyzing 847K+ bicycle accident records with geospatial visualization, temporal patterns, and severity analysis.", tags: ["python","plotly","dashboard","eda","geospatial"] },
+    // --- OPTIMIZATION ---
+    { id: "optimization", title: "Workforce Scheduling & Energy Load Optimization", dates: "2025", text: "Designed and presented an optimization project using linear and nonlinear programming approaches to improve workforce scheduling and energy load distribution, translating mathematical models into operational recommendations.", tags: ["optimization","operations","mathematical_modeling"] },
+    // --- CLOUD / BIG DATA ---
+    { id: "awsglue", title: "AWS Glue PySpark Data Pipeline", dates: "Dec 2025", text: "Developed an AWS Glue PySpark assignment processing online retail dataset on S3, implementing ETL transformations and big data pipeline architecture.", tags: ["aws","pyspark","etl","cloud","big_data"] },
+    // --- BUSINESS ANALYTICS ---
+    { id: "cymax", title: "Demand Forecasting Framework \u2014 Cymax Group Technologies", dates: "2025", text: "Designed an analytics solution for a Vancouver-based eCommerce logistics company proposing integrated demand forecasting using historical sales, seasonal trends, freight costs, marketplace signals, and price elasticity modeling to reduce inventory imbalance.", tags: ["analytics","forecasting","ecommerce","business","leadership"] },
+    // --- VISUALIZATION ---
+    { id: "nigeriaelection", title: "Nigerian Presidential Election Dashboard", dates: "Mar 2026", text: "Built an interactive HTML dashboard comparing presidential election results across South-South and South-East geopolitical zones (2015, 2019, 2023) using Chart.js with regional breakdowns and trend analysis.", tags: ["javascript","visualization","dashboard","chartjs"] }
   ],
   skills: {
-    languages: "Python, R, SQL, JavaScript, VBA",
-    ml: "Scikit-learn, PyTorch, TensorFlow, fastai, Pandas, NumPy, SciPy, Statsmodels, PySpark, XGBoost, SHAP",
-    viz: "Tableau, Power BI, Matplotlib, Seaborn, Plotly, Streamlit",
-    tools: "Git, Docker, AWS (S3, Glue), Google Cloud Vision API, ROS2, Jupyter, RStudio, Excel (Advanced), Hugging Face",
-    db: "SQL Server, Snowflake, MS Access",
-    methods: "Regression, Classification, Clustering, NLP, Time-Series Forecasting, A/B Testing, Deep Learning, Computer Vision, Object Detection, Dimensionality Reduction, Reinforcement Learning, Optimization"
+    languages: "Python, R, SQL, JavaScript, VBA, HTML/CSS",
+    ml: "Scikit-learn, PyTorch, TensorFlow/Keras, fastai, Pandas, NumPy, SciPy, Statsmodels, PySpark, XGBoost, SHAP, SMOTE, torchvision",
+    viz: "Tableau, Power BI, Matplotlib, Seaborn, Plotly, Streamlit, ggplot2, Chart.js, gt tables",
+    tools: "Git, Docker, AWS (S3, Glue, EC2), Google Cloud Vision API, ROS2, Jupyter, PyCharm, RStudio, Excel (Advanced), Hugging Face, FastAPI, Quarto",
+    db: "SQL Server, Snowflake, MS Access, MongoDB concepts, Parquet, DynamoDB concepts",
+    methods: "Regression, Classification, Clustering, NLP, Time-Series Forecasting, A/B Testing, Deep Learning, Computer Vision, Object Detection, Transfer Learning, Dimensionality Reduction, Reinforcement Learning, Optimization, Text Mining, Web Scraping, RLHF, ETL Pipelines",
+    reporting: "APA 7 formatting, Technical Reports, Business Proposals, Stakeholder Presentations, Dashboard Documentation, Academic Papers"
   }
 };
 
@@ -78,9 +109,64 @@ const TIPS = [
 
 function makeResumeSys(pages) {
   const pr = pages === 1
-    ? "CRITICAL: Select ONLY the most relevant content for ONE page. 3-4 bullets max per role, 3-4 projects max."
-    : "2-page resume: include more detail. 4-5 bullets per role, 5-6 projects, 3-4 sentence overview.";
-  return `You are a resume tailoring engine. Candidate data: ${JSON.stringify(MD)}\n\nRULES:\n1. 2-3 sentence overview matching job title.\n2. Top skills in 4 lines, renamed to match posting.\n3. ${pr}\n4. include_scaleai only if NLP/LLM/AI. include_airtel only if telecom/KPI/engineering.\n5. Order projects by relevance.\n\nONLY valid JSON:\n{"overview":"str","target_title":"str","skills":[{"label":"str","items":"str"}],"include_scaleai":bool,"include_airtel":bool,"freelance_bullets":["id"],"huawei_bullets":["id"],"airtel_bullets":["id"],"projects":["id"],"filename_suffix":"str"}`;
+    ? "CRITICAL: ONE PAGE ONLY. Select ONLY the most relevant 3-4 bullets per role and 3-4 projects. Every word must earn its place."
+    : "TWO PAGES: Include 4-5 bullets per role, 5-6 projects, expanded 3-4 sentence overview. Still be selective.";
+
+  return `You are an elite ATS-optimized resume tailoring engine for the Canadian tech job market (2026). Your output must pass Workday, Taleo, Lever, and Greenhouse ATS parsers AND impress a human recruiter in their 6-second scan.
+
+CANDIDATE DATA:
+${JSON.stringify(MD)}
+
+=== 2026 CANADIAN TECH RESUME RESEARCH (hard-coded rules) ===
+
+ATS COMPLIANCE (90% of recruiters use ATS):
+- Use standard section headings ONLY: "Professional Summary", "Technical Skills", "Education", "Professional Experience", "Projects"
+- Mirror EXACT keywords from the job posting in skills and bullets (ATS matches literal strings)
+- Distribute keywords across summary, skills, AND experience bullets (not just skills section)
+- Never use icons, tables, columns, or non-standard formatting terms
+
+BULLET POINT FORMULA (mandatory for ALL bullets):
+[Strong Action Verb] + [What You Did] + [Tool/Method Used] + [Quantified Result/Business Impact]
+- EVERY bullet MUST start with a different strong action verb: Developed, Engineered, Automated, Optimized, Deployed, Architected, Reduced, Accelerated, Designed, Implemented, Delivered, Built, Trained, Analyzed, Transformed, Extracted, Streamlined, Consolidated, Eliminated
+- EVERY bullet MUST contain at least ONE metric: percentage, dollar amount, time saved, dataset size, accuracy score, number of users/records/models
+- NEVER use weak verbs: Helped, Assisted, Worked on, Was responsible for, Participated in, Contributed to, Handled, Managed (without scope)
+- NEVER write duty descriptions. Only achievements with quantified outcomes.
+- Connect technical work to BUSINESS IMPACT: revenue, cost savings, efficiency gains, risk reduction, decision quality
+
+PROFESSIONAL SUMMARY RULES:
+- Start with the EXACT job title from the posting (e.g., "Data Analyst with..." or "Machine Learning Engineer with...")
+- Include: years of experience, 3-5 top matching skills, strongest quantified achievement, and degree
+- 2-3 sentences MAX. Every word must answer "Why should we interview this person?"
+- Mirror 3-5 keywords from the posting naturally
+
+SKILLS SECTION RULES:
+- Group into exactly 4 lines with labels that match the posting's language
+- Lead each line with the skills mentioned in the posting (order matters, recruiters scan left to right)
+- Include the EXACT tool names (not generic categories): "Python" not "programming", "Tableau" not "visualization tools"
+- Include specific libraries: pandas, NumPy, scikit-learn, PyTorch (not just "Python libraries")
+
+PROJECT RULES:
+- Each project bullet must follow the same action verb + tool + metric formula
+- Frame academic projects as professional deliverables with business impact language
+- Include deployment/production indicators where relevant (Docker, Hugging Face, Streamlit Cloud, Netlify)
+
+CANADIAN MARKET SPECIFICS:
+- 1 page for <10 years experience (this candidate)
+- No photos, age, marital status, or religion
+- Include city only (Vancouver, BC), not full address
+- LinkedIn URL is expected (92% of Canadian recruiters check)
+- PGWP eligibility can be mentioned if posting asks about work authorization
+
+${pr}
+
+SELECTION RULES:
+- include_scaleai: true ONLY if posting mentions NLP, LLM, AI, language models, generative AI, or RLHF
+- include_airtel: true ONLY if posting values telecom, engineering, monitoring, KPIs, or emphasizes Canadian work experience
+- Rewrite bullet text to echo the posting's exact terminology and keywords while keeping metrics accurate
+- Order projects by relevance to the posting, not by date
+
+RESPOND WITH ONLY VALID JSON (no markdown, no explanation):
+{"overview":"string","target_title":"string","skills":[{"label":"string","items":"string"}],"include_scaleai":boolean,"include_airtel":boolean,"freelance_bullets":["bullet_id"],"huawei_bullets":["bullet_id"],"airtel_bullets":["bullet_id"],"projects":["project_id"],"filename_suffix":"string"}`;
 }
 
 // Research-backed cover letter system prompt (2026 best practices)
@@ -95,8 +181,8 @@ CANDIDATE:
 - MS Data Analytics, Northeastern University Vancouver (GPA 3.8/4.0, graduating Jun 2026)
 - B.Eng Electrical & Electronic Engineering, Obafemi Awolowo University Nigeria
 - 5+ years analytics: freelance (churn models -12% risk, Power BI/Tableau dashboards -25% manual effort, SQL pipelines 500K+ records, R time-series forecasting), Huawei intern (diagnostics -15% failures), Scale AI NLP/LLM pipelines
-- Key projects: LiDAR point cloud with Lumotive, Faster R-CNN FruitNet on HuggingFace, bike sharing ML pipeline R2>0.91, credit risk SHAP, ULMFiT text classification, JobForge React app, Streamlit analytics dashboard
-- Skills: Python, R, SQL, PyTorch, TensorFlow, Scikit-learn, Docker, AWS, Tableau, Power BI, Git
+- Key projects: LiDAR point cloud with Lumotive (ROS2), Faster R-CNN FruitNet (4485 imgs, 11 classes, Docker+HuggingFace), bike sharing ML (R2>0.91, K-Means, PCA, Q-Learning), credit risk SHAP, ULMFiT text classification, Intel ResNet-18 transfer learning (F1=0.935), Nashville housing gradient boosting (R2=0.9481), JobForge React app, ResumeFit Netlify app, Amazon review Streamlit dashboard (500K rows), Steeves & Associates resource allocation (R/ggplot2), Nigerian election Chart.js dashboard, bicycle accidents Plotly dashboard (847K records), AWS Glue PySpark ETL, Cymax demand forecasting, workforce scheduling optimization
+- Skills: Python, R, SQL, JavaScript, PyTorch, TensorFlow, Scikit-learn, fastai, Docker, AWS, Tableau, Power BI, Streamlit, ggplot2, Git, FastAPI, ROS2
 
 PROBLEM-SOLUTION FORMAT (mandatory structure):
 
