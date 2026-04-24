@@ -319,7 +319,7 @@ Respond ONLY valid JSON array, no markdown:
   function doDownload(ref, filename) {
     if (!ref.current) return;
     const w = window.open("", "_blank");
-    w.document.write(`<!DOCTYPE html><html><head><title> </title>
+    w.document.write(`<!DOCTYPE html><html><head><title>${filename}</title>
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
       <style>
         *{box-sizing:border-box;margin:0;padding:0}
@@ -331,10 +331,7 @@ Respond ONLY valid JSON array, no markdown:
       </style>
     </head><body>${ref.current.innerHTML}</body></html>`);
     w.document.close();
-    setTimeout(() => {
-      // Try to trigger Save as PDF with no headers/footers hint
-      w.print();
-    }, 600);
+    setTimeout(() => w.print(), 600);
   }
 
   function doCopy(ref) {
@@ -508,7 +505,13 @@ Respond ONLY valid JSON array, no markdown:
                   {"✓ "}{tab === "resume" ? res.target_title : tab === "cover" ? (cov?.company_name || "") : "Q&A"}
                 </span>
                 <button onClick={() => doCopy(tab === "resume" ? rRef : tab === "cover" ? cRef : qaRef)} style={bSm(false)}>{copied ? "Copied!" : "Copy"}</button>
-                <button onClick={() => doDownload(tab === "resume" ? rRef : tab === "cover" ? cRef : qaRef, tab === "resume" ? `Resume_${res.filename_suffix}` : tab === "cover" ? `CoverLetter_${cov?.company_name || ""}` : `QA_Answers`)}
+                <button onClick={() => {
+                  const company = (cov?.company_name || res.filename_suffix || "company").replace(/[^a-zA-Z0-9]/g, "_");
+                  const role = (res.target_title || "role").replace(/[^a-zA-Z0-9]/g, "_");
+                  const base = `Joseph_Eyinade_${role}_${company}`;
+                  const fname = tab === "resume" ? base : tab === "cover" ? `Cover_Letter_${company}` : `QA_Answers_${company}`;
+                  doDownload(tab === "resume" ? rRef : tab === "cover" ? cRef : qaRef, fname);
+                }}
                   style={{ ...bSm(false), background: "linear-gradient(135deg,#10B981,#059669)", border: "none" }}>
                   {"⬇ Download PDF"}
                 </button>
