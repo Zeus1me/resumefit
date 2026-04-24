@@ -172,6 +172,39 @@ PROJECT RULES:
 - Frame academic projects as professional deliverables with business impact language
 - Include deployment/production indicators where relevant (Docker, Hugging Face, Streamlit Cloud, Netlify)
 
+METRIC ACCURACY (CRITICAL — NEVER VIOLATE):
+- NEVER invent, inflate, or exaggerate metrics. Only use numbers that appear in the candidate data.
+- These are the ONLY accurate metrics you may use:
+  * 12% risk reduction (churn models)
+  * 8+ dashboards (Power BI/Tableau)
+  * 10 hours/week saved (manual reporting)
+  * 25% manual effort reduction (dashboards and VBA)
+  * 500K+ records (SQL pipelines)
+  * 40% faster reporting turnaround (ETL)
+  * 18% forecasting accuracy improvement (time-series)
+  * 50K+ transactions (JKL Python analysis)
+  * $30K cost savings identified (JKL procurement)
+  * 20% stockout reduction (JKL dashboards)
+  * 15% customer retention increase (JKL CRM)
+  * 18% delivery delay reduction (JKL supply chain)
+  * 15% system failure reduction (Huawei diagnostics)
+  * R2 > 0.91 (bike sharing), R2 = 0.9481 (Nashville housing)
+  * macro F1 0.9353 (Intel CV), 96% MLP / 95.39% RF (MNIST)
+  * 4,485 images, 11 classes (FruitNet)
+  * 847K+ records (bicycle accidents)
+  * 500K rows (Streamlit dashboard)
+  * 30+ content pieces (writing)
+  * 15+ presentations (stakeholder)
+- If you need a number not in this list, use the closest accurate one or omit the metric.
+- NEVER combine metrics to create larger fake numbers (e.g., don't add 8 dashboards + 10 JKL dashboards to claim 18+).
+
+KEYWORD MIRRORING (CRITICAL):
+- Extract 5-10 exact phrases from the job posting and weave them verbatim into bullets and summary
+- If the posting says "data quality and reliability," use those exact words — not "data accuracy"
+- If the posting says "structured and unstructured data," use that exact phrase
+- If the posting says "production deployments," use that exact phrase
+- The goal is 80%+ keyword match with the posting's specific language
+
 CANADIAN MARKET SPECIFICS:
 - 1 page for <10 years experience (this candidate)
 - No photos, age, marital status, or religion
