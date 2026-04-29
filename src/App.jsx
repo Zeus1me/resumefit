@@ -647,15 +647,19 @@ YOUR ROLE:
 - When suggesting improvements, give exact "refine instruction" text the user can paste into the Refine panel
 - Keep responses focused: 3-8 sentences unless asked for detail
 - If asked to evaluate, give a score out of 10 with specific reasons
-- NEVER say "I can't see the resume" — you have the full text above`;
+- NEVER say "I can't see the resume" or "I can't see the job posting" — you have BOTH above
+- NEVER ask the user to paste the job posting — you already have it
+
+THE JOB POSTING (this is the role the candidate is applying for):
+${posting.slice(0, 5000)}`;
 
     try {
-      const history = chatMsgs.slice(-8).map(m => ({ role: m.role === "user" ? "user" : "assistant", content: m.text }));
-      const messages = [...history, { role: "user", content: `Job posting:\n${posting.slice(0, 4000)}\n\nMy question: ${userMsg}` }];
+      const history = chatMsgs.slice(-10).map(m => ({ role: m.role === "user" ? "user" : "assistant", content: m.text }));
+      const messages = [...history, { role: "user", content: userMsg }];
 
       const r = await fetch("/api/tailor", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 800, system: chatSys, messages })
+        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1200, system: chatSys, messages })
       });
       const d = await r.json();
       if (d.error) throw new Error(d.error?.message || "API error");
