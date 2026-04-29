@@ -402,6 +402,10 @@ export default function App() {
   const [qaGenerated, setQaGenerated] = useState(false);
   const qaRef = useRef(null);
   const [tipIdx, setTipIdx] = useState(Math.floor(Math.random() * TIPS.length));
+  const [chatMsgs, setChatMsgs] = useState([]);
+  const [chatInput, setChatInput] = useState("");
+  const [chatLoading, setChatLoading] = useState(false);
+  const chatEndRef = useRef(null);
   const rRef = useRef(null);
   const cRef = useRef(null);
   const taRef = useRef(null);
@@ -567,7 +571,59 @@ Respond ONLY valid JSON array, no markdown:
   const getExp = id => MD.experience.find(e => e.id === id);
   const getBul = (eid, ids) => { const e = getExp(eid); return e ? ids.map(b => e.bullets.find(x => x.id === b)).filter(Boolean) : []; };
   const getProj = pid => MD.projects.find(p => p.id === pid);
-  function reset() { setStatus("idle"); setRes(null); setCov(null); setPosting(""); setUrl(""); setErr(""); setProg(""); setInstr(""); setTab("resume"); setCopied(false); setCovLoading(false); setGenType("resume"); setRefineText(""); setRefining(false); setQuestions([{ q: "", a: "" }]); setQaGenerated(false); setQaLoading(false); }
+  function reset() { setStatus("idle"); setRes(null); setCov(null); setPosting(""); setUrl(""); setErr(""); setProg(""); setInstr(""); setTab("resume"); setCopied(false); setCovLoading(false); setGenType("resume"); setRefineText(""); setRefining(false); setQuestions([{ q: "", a: "" }]); setQaGenerated(false); setQaLoading(false); setChatMsgs([]); setChatInput(""); }
+
+  async function handleChat() {
+    if (!chatInput.trim() || chatLoading) return;
+    const userMsg = chatInput.trim();
+    setChatInput("");
+    setChatMsgs(prev => [...prev, { role: "user", text: userMsg }]);
+    setChatLoading(true);
+
+    const chatSys = `You are an expert tech career advisor and resume coach embedded in ResumeFit, a resume tailoring app. You have full context of:
+
+1. THE JOB POSTING the user pasted (provided below)
+2. THE GENERATED RESUME (overview, skills, bullets, projects selected)
+3. THE CANDIDATE'S FULL PROFILE: ${MD.name}, MS Data Analytics at Northeastern (3.8 GPA, graduating Jun 2026), B.Eng EEE, 6+ years analytics, Data Analyst at Jonathan Kings Limited (logistics/retail), Freelance Data Analyst since 2019, Huawei + Airtel interns, 27 projects, PGWP eligible, Vancouver
+
+YOUR ROLE:
+- Answer questions about resume-job fit, interview prep, skill gaps, application strategy
+- Give specific, actionable advice (not generic platitudes)
+- Reference the actual job posting requirements and the candidate's actual experience
+- Be honest about gaps — don't sugarcoat
+- Suggest specific refine instructions when relevant
+- Keep responses concise (3-6 sentences unless asked for detail)
+
+CURRENT RESUME OUTPUT:
+Overview: ${res?.overview || "not yet generated"}
+Target title: ${res?.target_title || "not set"}
+Match score: ${res?.match_score || "N/A"}
+Skills: ${JSON.stringify(res?.skills || [])}
+Projects selected: ${JSON.stringify(res?.projects || [])}
+Key highlights: ${JSON.stringify(res?.key_highlights || [])}
+Cover letter generated: ${cov ? "yes" : "no"}`;
+
+    try {
+      const history = chatMsgs.slice(-8).map(m => ({ role: m.role === "user" ? "user" : "assistant", content: m.text }));
+      const messages = [...history, { role: "user", content: `Job posting context:\n${posting.slice(0, 4000)}\n\nMy question: ${userMsg}` }];
+
+      const r = await fetch("/api/tailor", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 800, system: chatSys, messages })
+      });
+      const d = await r.json();
+      if (d.error) throw new Error(d.error?.message || "API error");
+      const reply = (d.content?.map(i => i.text || "").join("\n") || "").trim();
+      setChatMsgs(prev => [...prev, { role: "assistant", text: reply }]);
+    } catch (e) {
+      setChatMsgs(prev => [...prev, { role: "assistant", text: "Error: " + e.message }]);
+    }
+    setChatLoading(false);
+  }
+
+  useEffect(() => {
+    if (chatEndRef.current) chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+  }, [chatMsgs]);
 
   function doDownload(ref, filename) {
     if (!ref.current) return;
@@ -1012,6 +1068,81 @@ Respond ONLY valid JSON array, no markdown:
                     {refining ? <span style={{ display: "flex", alignItems: "center", gap: 6 }}><span className="rf-spin"/>{"Refining..."}</span> : "Refine"}
                   </button>
                 </div>
+              </div>
+            </div>
+
+            {/* AI ADVISOR CHAT */}
+            <div style={{ marginTop: 20, background: C.surface, border: `1px solid ${C.border}`, borderRadius: 12, overflow: "hidden" }}>
+              <div style={{ padding: "14px 20px 8px", display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ fontSize: 13, fontWeight: 600 }}>{"💬 AI Career Advisor"}</div>
+                <div style={{ fontSize: 11, color: C.textD }}>Ask about fit, gaps, interview prep, or strategy</div>
+              </div>
+
+              {/* Chat messages */}
+              {chatMsgs.length > 0 && (
+                <div style={{ maxHeight: 320, overflowY: "auto", padding: "0 20px 8px" }}>
+                  {chatMsgs.map((m, i) => (
+                    <div key={i} style={{
+                      display: "flex", justifyContent: m.role === "user" ? "flex-end" : "flex-start",
+                      marginBottom: 8
+                    }}>
+                      <div style={{
+                        maxWidth: "85%", padding: "8px 14px", borderRadius: 10,
+                        background: m.role === "user" ? "rgba(59,130,246,0.12)" : "rgba(255,255,255,0.04)",
+                        border: `0.5px solid ${m.role === "user" ? "rgba(59,130,246,0.25)" : C.border}`,
+                        fontSize: 12.5, lineHeight: 1.6, color: C.text, whiteSpace: "pre-wrap"
+                      }}>
+                        {m.text}
+                      </div>
+                    </div>
+                  ))}
+                  {chatLoading && (
+                    <div style={{ display: "flex", justifyContent: "flex-start", marginBottom: 8 }}>
+                      <div style={{ padding: "8px 14px", borderRadius: 10, background: "rgba(255,255,255,0.04)", border: `0.5px solid ${C.border}`, fontSize: 12.5, color: C.textD }}>
+                        <span className="rf-spin" style={{ marginRight: 8 }}/>{"Thinking..."}
+                      </div>
+                    </div>
+                  )}
+                  <div ref={chatEndRef}/>
+                </div>
+              )}
+
+              {/* Chat input */}
+              <div style={{ padding: "8px 20px 16px" }}>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <input value={chatInput} onChange={e => setChatInput(e.target.value)}
+                    disabled={chatLoading}
+                    placeholder="e.g. How well do I fit this role? What should I prep for the interview? What are my biggest gaps?"
+                    onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleChat(); } }}
+                    style={{
+                      flex: 1, background: C.bg, border: `1px solid ${C.border}`, borderRadius: 8,
+                      padding: "10px 12px", fontSize: 12.5, fontFamily: "'DM Sans',sans-serif",
+                      color: C.text, outline: "none", boxSizing: "border-box"
+                    }}
+                    onFocus={fB} onBlur={bB} />
+                  <button onClick={handleChat} disabled={!chatInput.trim() || chatLoading}
+                    style={{
+                      padding: "10px 18px", borderRadius: 8, border: "none",
+                      background: !chatInput.trim() ? C.border : "linear-gradient(135deg,#3B82F6,#1D4ED8)",
+                      color: !chatInput.trim() ? C.textD : "#fff",
+                      fontSize: 12, fontWeight: 600, cursor: !chatInput.trim() ? "not-allowed" : "pointer",
+                      fontFamily: "inherit", whiteSpace: "nowrap"
+                    }}>
+                    {"Ask"}
+                  </button>
+                </div>
+                {chatMsgs.length === 0 && (
+                  <div style={{ display: "flex", gap: 6, marginTop: 8, flexWrap: "wrap" }}>
+                    {["How well do I fit this role?", "What are my biggest gaps?", "Interview prep tips?", "Should I apply?"].map((q, i) => (
+                      <button key={i} onClick={() => { setChatInput(q); }}
+                        style={{
+                          padding: "4px 10px", borderRadius: 6, fontSize: 11, cursor: "pointer",
+                          fontFamily: "inherit", border: `1px solid ${C.border}`,
+                          background: "transparent", color: C.textM, transition: "all 0.15s"
+                        }}>{q}</button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
