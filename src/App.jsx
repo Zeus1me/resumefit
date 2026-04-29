@@ -580,32 +580,78 @@ Respond ONLY valid JSON array, no markdown:
     setChatMsgs(prev => [...prev, { role: "user", text: userMsg }]);
     setChatLoading(true);
 
-    const chatSys = `You are an expert tech career advisor and resume coach embedded in ResumeFit, a resume tailoring app. You have full context of:
+    // Build full resume text for context
+    const freeBuls = getBul("freelance", res?.freelance_bullets || []).map(b => "• " + b.text).join("\n");
+    const jklBuls = getBul("jkl", res?.jkl_bullets || []).map(b => "• " + b.text).join("\n");
+    const huaweiBuls = getBul("huawei", res?.huawei_bullets || []).map(b => "• " + b.text).join("\n");
+    const airtelBuls = res?.include_airtel ? getBul("airtel", res?.airtel_bullets || []).map(b => "• " + b.text).join("\n") : "";
+    const writerBuls = res?.include_writer ? getBul("writer", res?.writer_bullets || []).map(b => "• " + b.text).join("\n") : "";
+    const projTexts = (res?.projects || []).map(pid => { const p = getProj(pid); return p ? `${p.title} (${p.dates}): ${p.text}` : ""; }).filter(Boolean).join("\n");
+    const certTexts = (res?.certifications || []).map(cid => { const c = MD.certifications.find(x => x.id === cid); return c ? `${c.name} — ${c.issuer} (${c.date})` : ""; }).filter(Boolean).join(", ");
+    const skillTexts = (res?.skills || []).map(s => `${s.label}: ${s.items}`).join("\n");
+    const courseworkText = (res?.coursework || []).join(", ");
 
-1. THE JOB POSTING the user pasted (provided below)
-2. THE GENERATED RESUME (overview, skills, bullets, projects selected)
-3. THE CANDIDATE'S FULL PROFILE: ${MD.name}, MS Data Analytics at Northeastern (3.8 GPA, graduating Jun 2026), B.Eng EEE, 6+ years analytics, Data Analyst at Jonathan Kings Limited (logistics/retail), Freelance Data Analyst since 2019, Huawei + Airtel interns, 27 projects, PGWP eligible, Vancouver
+    const fullResumeText = `
+PROFESSIONAL SUMMARY:
+${res?.overview || "not yet generated"}
+
+KEY HIGHLIGHTS:
+${(res?.key_highlights || []).map(h => "• " + h).join("\n")}
+
+TECHNICAL SKILLS:
+${skillTexts}
+
+EDUCATION:
+MS Data Analytics, Northeastern University Vancouver (GPA 3.8, Sep 2024 – Jun 2026)
+Relevant Coursework: ${courseworkText}
+B.Eng EEE, Obafemi Awolowo University Nigeria (2015-2020)
+
+CERTIFICATIONS: ${certTexts}
+
+PROFESSIONAL EXPERIENCE:
+Freelance Data Analyst | Remote | 2019 – Present
+${freeBuls}
+
+Data Analyst | Jonathan Kings Limited, Nigeria | Jan 2021 – Dec 2023
+${jklBuls}
+
+${writerBuls ? `Freelance Technical Writer | Upwork | 2022 – Present\n${writerBuls}\n` : ""}Field Engineering Intern | Huawei Technologies, Nigeria | May – Aug 2019
+${huaweiBuls}
+
+${airtelBuls ? `Telecom Engineering Intern | Airtel Nigeria | Jul – Dec 2019\n${airtelBuls}\n` : ""}
+PROJECTS:
+${projTexts}
+
+MATCH SCORE: ${res?.match_score || "N/A"}%
+MATCHED KEYWORDS: ${(res?.matched_keywords || []).join(", ")}`;
+
+    const covText = cov ? `\nCOVER LETTER:\n${cov.salutation}\n${cov.body}\n${cov.closing}` : "";
+
+    const chatSys = `You are an expert tech career advisor and resume coach embedded in ResumeFit. You can see the FULL generated resume, cover letter, and job posting.
+
+CANDIDATE: ${MD.name}, Vancouver BC, PGWP eligible
+- MS Data Analytics at Northeastern (3.8 GPA, graduating Jun 2026)
+- B.Eng Electrical & Electronic Engineering
+- 6+ years analytics experience
+- GitHub: ${MD.github} | LinkedIn: ${MD.linkedin}
+
+THE CURRENT GENERATED RESUME (this is what the candidate will submit):
+${fullResumeText}
+${covText}
 
 YOUR ROLE:
+- You CAN see the full resume above. Reference specific bullets, skills, and projects by name.
 - Answer questions about resume-job fit, interview prep, skill gaps, application strategy
-- Give specific, actionable advice (not generic platitudes)
-- Reference the actual job posting requirements and the candidate's actual experience
-- Be honest about gaps — don't sugarcoat
-- Suggest specific refine instructions when relevant
-- Keep responses concise (3-6 sentences unless asked for detail)
-
-CURRENT RESUME OUTPUT:
-Overview: ${res?.overview || "not yet generated"}
-Target title: ${res?.target_title || "not set"}
-Match score: ${res?.match_score || "N/A"}
-Skills: ${JSON.stringify(res?.skills || [])}
-Projects selected: ${JSON.stringify(res?.projects || [])}
-Key highlights: ${JSON.stringify(res?.key_highlights || [])}
-Cover letter generated: ${cov ? "yes" : "no"}`;
+- Give specific, actionable advice — reference exact lines from the resume and exact requirements from the posting
+- Be honest about gaps and misalignments — don't sugarcoat
+- When suggesting improvements, give exact "refine instruction" text the user can paste into the Refine panel
+- Keep responses focused: 3-8 sentences unless asked for detail
+- If asked to evaluate, give a score out of 10 with specific reasons
+- NEVER say "I can't see the resume" — you have the full text above`;
 
     try {
       const history = chatMsgs.slice(-8).map(m => ({ role: m.role === "user" ? "user" : "assistant", content: m.text }));
-      const messages = [...history, { role: "user", content: `Job posting context:\n${posting.slice(0, 4000)}\n\nMy question: ${userMsg}` }];
+      const messages = [...history, { role: "user", content: `Job posting:\n${posting.slice(0, 4000)}\n\nMy question: ${userMsg}` }];
 
       const r = await fetch("/api/tailor", {
         method: "POST", headers: { "Content-Type": "application/json" },
